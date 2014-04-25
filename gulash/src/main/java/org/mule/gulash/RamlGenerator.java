@@ -18,7 +18,7 @@ public class RamlGenerator
 
     public void generateScaffold(File ramlFile) throws FileNotFoundException
     {
-        final Raml raml = new RamlDocumentBuilder().build(new FileInputStream(ramlFile), ramlFile.getParentFile().getAbsolutePath());
+        final Raml raml = new RamlDocumentBuilder().build(new FileInputStream(ramlFile), ramlFile.getAbsoluteFile().getParentFile().getAbsolutePath());
         final Scaffolding scaffolding = new Scaffolding();
         scaffolding.init();
         scaffolding.api(ramlFile.getName());

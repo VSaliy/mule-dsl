@@ -2,6 +2,7 @@ package org.mule.me.launcher;
 
 
 import org.mule.gulash.GroovyRunner;
+import org.mule.module.core.Mule;
 
 import java.io.File;
 import java.net.URL;
@@ -21,7 +22,7 @@ public class GroovyRunnerTest
     {
         URL resource = getClass().getClassLoader().getResource("test.groovy");
 
-        new GroovyRunner().run(new File(resource.toURI()), new String[0], new File("."));
+        new GroovyRunner().run(new File(resource.toURI()), new String[0], new Mule());
     }
 
     @Test
@@ -30,6 +31,6 @@ public class GroovyRunnerTest
     {
         URL resource = getClass().getClassLoader().getResource("twitter.groovy");
 
-        new GroovyRunner().run(new File(resource.toURI()), new String[]{"Probando 1 2 3 4"}, new File("."));
+        new GroovyRunner().run(new File(resource.toURI()), new String[]{"Probando 1 2 3 4"}, new Mule());
     }
 }

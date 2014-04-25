@@ -51,7 +51,7 @@ public class GulashMain
             else if (line.hasOption(CREATE_OPTION))
             {
                 final RamlGenerator ramlGenerator = new RamlGenerator();
-                ramlGenerator.generateScaffold(new File(line.getOptionValue(CREATE_OPTION)));
+                ramlGenerator.generateScaffold(new File(muleHome, line.getOptionValue(CREATE_OPTION)));
             }
 
             else
