@@ -7,6 +7,7 @@ import static org.mule.module.core.builder.PropertiesBuilder.properties;
 
 import org.mule.api.MuleContext;
 import org.mule.api.exception.MessagingExceptionHandler;
+import org.mule.api.processor.MessageProcessor;
 import org.mule.config.dsl.Builder;
 import org.mule.construct.Flow;
 import org.mule.module.Core;
@@ -71,7 +72,7 @@ public class RestRouterBuilder implements Builder<Flow>
     }
 
 
-    public RestRouterBuilder then(MessageProcessorBuilder<?>... messageProcessorBuilder)
+    public RestRouterBuilder then(Builder<? extends MessageProcessor>... messageProcessorBuilder)
     {
         if (resourceActionBuilders.isEmpty())
         {

@@ -74,19 +74,19 @@
         <dependency>
             <groupId>org.mule.tools.devkit</groupId>
             <artifactId>mule-devkit-code-model</artifactId>
-            <version>3.5.0-bighorn</version>
+            <version>${mule.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mule.modules</groupId>
             <artifactId>mule-module-devkit-support</artifactId>
-            <version>3.5.0-bighorn</version>
+            <version>${mule.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.mule.tools.devkit</groupId>
             <artifactId>mule-devkit-generation-core</artifactId>
-            <version>3.5.0-bighorn</version>
+            <version>${mule.version}</version>
             <scope>provided</scope>
         </dependency>
 

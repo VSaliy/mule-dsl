@@ -1,5 +1,7 @@
-package org.mule.dependency;
+package org.mule.gulash.depedencies;
 
+import org.mule.dependency.DependencyManager;
+import org.mule.dependency.Module;
 import org.mule.gulash.depedencies.MvnFactory;
 import org.mule.module.core.BuilderConfigurationException;
 import org.mule.module.core.Mule;

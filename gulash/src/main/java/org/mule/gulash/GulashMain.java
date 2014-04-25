@@ -2,12 +2,11 @@ package org.mule.gulash;
 
 
 import org.mule.dependency.DependencyManager;
-import org.mule.dependency.MavenDependencyManager;
+import org.mule.gulash.depedencies.MavenDependencyManager;
 import org.mule.dependency.ModuleBuilder;
 import org.mule.module.core.Mule;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.cli.BasicParser;
@@ -18,7 +17,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 public class GulashMain
@@ -36,7 +34,8 @@ public class GulashMain
     {
 
         final File muleHome = new File(".");
-
+        final DependencyManager mavenDependencyManager = new MavenDependencyManager();
+        final Mule mule = new Mule(muleHome, mavenDependencyManager);
         final Options options = createOptions();
 
         // create the parser
@@ -55,54 +54,53 @@ public class GulashMain
                 ramlGenerator.generateScaffold(new File(line.getOptionValue(CREATE_OPTION)));
             }
 
-            else if (line.hasOption(REQUIRE_OPTION))
-            {
-                final DependencyManager mavenDependencyManager = new MavenDependencyManager();
-                final String moduleName = line.getOptionValue(REQUIRE_OPTION);
-                final ModuleBuilder moduleBuilder = new ModuleBuilder(moduleName);
-                if (line.hasOption(VERSION_OPTION))
-                {
-                    moduleBuilder.version(line.getOptionValue(VERSION_OPTION));
-                }
-                mavenDependencyManager.installModule(moduleBuilder.create(), new Mule(muleHome));
-            }
-            else if (line.hasOption(LIST_OPTION))
-            {
-
-                final DependencyManager mavenDependencyManager = new MavenDependencyManager();
-                final String moduleName = line.getOptionValue(LIST_OPTION);
-
-
-                final List<String> versions = mavenDependencyManager.listVersions(moduleName);
-                if (versions.isEmpty())
-                {
-                    System.out.println("NO VERSION of " + moduleName + " was found");
-                }
-                else
-                {
-                    System.out.println("Available versions of " + moduleName);
-                    for (String version : versions)
-                    {
-                        System.out.println("\t- " + version.toString());
-                    }
-                }
-            }
-            else if (line.hasOption(CLEAN_OPTION))
-            {
-                new Mule(muleHome).getLibDirectory().delete();
-            }
             else
             {
-                String[] argsArray = line.getArgs();
-                if (!ArrayUtils.isEmpty(argsArray))
+                if (line.hasOption(REQUIRE_OPTION))
                 {
-                    final GroovyRunner groovyRunner = new GroovyRunner();
-                    groovyRunner.run(new File(argsArray[0]), (String[]) ArrayUtils.remove(argsArray, 0), muleHome);
+                    final String moduleName = line.getOptionValue(REQUIRE_OPTION);
+                    final ModuleBuilder moduleBuilder = new ModuleBuilder(moduleName);
+                    if (line.hasOption(VERSION_OPTION))
+                    {
+                        moduleBuilder.version(line.getOptionValue(VERSION_OPTION));
+                    }
+                    mavenDependencyManager.installModule(moduleBuilder.create(), mule);
+                }
+                else if (line.hasOption(LIST_OPTION))
+                {
+
+                    final String moduleName = line.getOptionValue(LIST_OPTION);
+                    final List<String> versions = mavenDependencyManager.listVersions(moduleName);
+                    if (versions.isEmpty())
+                    {
+                        System.out.println("NO VERSION of " + moduleName + " was found");
+                    }
+                    else
+                    {
+                        System.out.println("Available versions of " + moduleName);
+                        for (String version : versions)
+                        {
+                            System.out.println("\t- " + version.toString());
+                        }
+                    }
+                }
+                else if (line.hasOption(CLEAN_OPTION))
+                {
+                    mule.getLibDirectory().delete();
                 }
                 else
                 {
-                    final InteractiveGroovyRunner groovyRunner = new InteractiveGroovyRunner();
-                    groovyRunner.run(muleHome);
+                    String[] argsArray = line.getArgs();
+                    if (!ArrayUtils.isEmpty(argsArray))
+                    {
+                        final GroovyRunner groovyRunner = new GroovyRunner();
+                        groovyRunner.run(new File(argsArray[0]), (String[]) ArrayUtils.remove(argsArray, 0), mule);
+                    }
+                    else
+                    {
+                        final InteractiveGroovyRunner groovyRunner = new InteractiveGroovyRunner();
+                        groovyRunner.run(mule);
+                    }
                 }
             }
         }

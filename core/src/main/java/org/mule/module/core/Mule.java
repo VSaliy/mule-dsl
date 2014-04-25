@@ -19,7 +19,7 @@ import org.mule.config.dsl.Builder;
 import org.mule.construct.Flow;
 import org.mule.context.DefaultMuleContextFactory;
 import org.mule.dependency.DependencyManager;
-import org.mule.dependency.MavenDependencyManager;
+import org.mule.dependency.DummyDependencyManagerImpl;
 import org.mule.dependency.Module;
 import org.mule.dependency.ModuleBuilder;
 
@@ -38,9 +38,11 @@ public class Mule
     private File muleHome;
     private ModuleClassLoader muleClassLoader;
     private List<ModuleBuilder> moduleBuilders = new ArrayList<ModuleBuilder>();
-    private DependencyManager resolver = new MavenDependencyManager();
 
-    public Mule(File muleHome)
+
+    private DependencyManager resolver;
+
+    public Mule(File muleHome, DependencyManager dependencyManager)
     {
         this.muleHome = muleHome;
         setup();
@@ -48,7 +50,18 @@ public class Mule
 
     public Mule()
     {
-        this(new File("."));
+        this(new File("."), new DummyDependencyManagerImpl());
+    }
+
+
+    public DependencyManager getResolver()
+    {
+        return resolver;
+    }
+
+    public void setResolver(DependencyManager resolver)
+    {
+        this.resolver = resolver;
     }
 
     public ModuleBuilder require(String module)
