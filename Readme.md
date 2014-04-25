@@ -95,10 +95,8 @@ Just use maven
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # First compile dsl-devkit-plugin
-cd dsl-devkit-plugin
 mvn clean install
-# Then run maven from the root folder
-cd ..
+cd modules
 mvn clean install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
