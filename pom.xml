@@ -17,7 +17,7 @@
 
     <modules>
         <module>core</module>
-        <module>dependency-manager</module>
+        <module>mvn-dependency-manager</module>
         <module>gulash</module>
         <module>dsl-devkit-plugin</module>
         <!--module>modules</module-->

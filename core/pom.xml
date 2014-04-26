@@ -12,6 +12,7 @@
     <artifactId>core</artifactId>
 
     <dependencies>
+        <!--All mule dependecies should be provided so that core and be used inside a mule distribution -->
         <dependency>
             <groupId>org.mule</groupId>
             <artifactId>mule-core</artifactId>
@@ -26,13 +27,9 @@
                     <artifactId>asm-commons</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.ning</groupId>
-            <artifactId>async-http-client</artifactId>
-            <version>1.7.19</version>
-        </dependency>
 
         <dependency>
             <groupId>org.mule.modules</groupId>
@@ -65,8 +62,8 @@
                     <artifactId>rhino</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
-
 
 
         <dependency>
@@ -79,6 +76,7 @@
                     <artifactId>mule-module-spring-config</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -95,6 +93,7 @@
                     <artifactId>spring-context</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
 
 

@@ -16,7 +16,7 @@
     </parent>
 
     <groupId>org.mule.modules</groupId>
-    <artifactId>mule-devkitmodules-parent</artifactId>
+    <artifactId>mule-gulash-modules</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -37,6 +37,7 @@
         <module>mule-module-twitter</module>
         <module>mule-module-webcam</module>
         <module>mule-module-jira</module>
+        <module>mule-module-netty</module>
     </modules>
 
     <build>

@@ -11,7 +11,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dependency-manager</artifactId>
+    <artifactId>mvn-dependency-manager</artifactId>
 
 
     <properties>
@@ -19,12 +19,15 @@
         <mavenVersion>3.1.0</mavenVersion>
         <wagonVersion>1.0-beta-7</wagonVersion>
     </properties>
+
     <dependencies>
+
         <dependency>
             <groupId>org.mule.gulash</groupId>
             <artifactId>core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.aether</groupId>
             <artifactId>aether-api</artifactId>
@@ -65,5 +68,12 @@
             <artifactId>maven-aether-provider</artifactId>
             <version>${mavenVersion}</version>
         </dependency>
+        <dependency>
+            <groupId>org.mule</groupId>
+            <artifactId>mule-core</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
     </dependencies>
 </project>

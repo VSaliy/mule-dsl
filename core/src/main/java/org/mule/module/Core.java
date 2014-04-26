@@ -2,6 +2,7 @@ package org.mule.module;
 
 
 import org.mule.api.processor.MessageProcessor;
+import org.mule.api.routing.filter.Filter;
 import org.mule.config.dsl.Builder;
 import org.mule.module.core.builder.AsyncBuilder;
 import org.mule.module.core.builder.ChoiceBuilder;
@@ -12,7 +13,7 @@ import org.mule.module.core.builder.FlowBuilder;
 import org.mule.module.core.builder.FlowBuilderImpl;
 import org.mule.module.core.builder.FlowRefBuilder;
 import org.mule.module.core.builder.ForeachBuilder;
-import org.mule.module.core.builder.IfBuilder;
+import org.mule.module.core.builder.WhenBuilder;
 import org.mule.module.core.builder.InboundEndpointBuilder;
 import org.mule.module.core.builder.JavaBeanElementBuilder;
 import org.mule.module.core.builder.LoggerBuilder;
@@ -64,9 +65,14 @@ public class Core
         return new ChoiceBuilder();
     }
 
-    public static IfBuilder when(String condition)
+    public static WhenBuilder when(String expression)
     {
-        return new IfBuilder(condition);
+        return new WhenBuilder(FilterBuilder.expression(expression));
+    }
+
+    public static WhenBuilder when(Filter condition)
+    {
+        return new WhenBuilder(condition);
     }
 
     public static AsyncBuilder async(Builder<MessageProcessor>... messageProcessors)
@@ -89,11 +95,10 @@ public class Core
         return new InboundEndpointBuilder(address);
     }
 
-    public static <T extends MessageProcessor> CustomMessageProcessorBuilder<T> invoke(Class<T> clazz)
+    public static <T extends MessageProcessor> CustomMessageProcessorBuilder<T> process(Class<T> clazz)
     {
         return new CustomMessageProcessorBuilderImpl<T>(clazz);
     }
-
 
 
 }

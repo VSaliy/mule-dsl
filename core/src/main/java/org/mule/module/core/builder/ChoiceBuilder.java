@@ -4,6 +4,7 @@ import org.mule.api.MuleContext;
 import org.mule.api.processor.MessageProcessor;
 import org.mule.api.routing.filter.Filter;
 import org.mule.config.dsl.Builder;
+import org.mule.module.FilterBuilder;
 import org.mule.module.core.BuilderConfigurationException;
 import org.mule.routing.ChoiceRouter;
 import org.mule.routing.filters.ExpressionFilter;
@@ -22,8 +23,7 @@ public class ChoiceBuilder implements Builder<ChoiceRouter>
 
     public ChoiceBuilder on(String expression)
     {
-        ExpressionFilter filter = new ExpressionFilter(expression);
-        return on(filter);
+        return on(FilterBuilder.expression(expression));
     }
 
     public ChoiceBuilder on(Filter filter)

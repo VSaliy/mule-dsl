@@ -1,9 +1,6 @@
 package org.mule.gulash.depedencies;
 
-import java.io.PrintStream;
-
 import org.eclipse.aether.AbstractRepositoryListener;
-import org.eclipse.aether.RepositoryEvent;
 
 
 /**
@@ -13,14 +10,9 @@ public class DefaultRepositoryListener extends AbstractRepositoryListener
 {
 
 
-
     public DefaultRepositoryListener()
     {
 
     }
-
-
-
-
 
 }

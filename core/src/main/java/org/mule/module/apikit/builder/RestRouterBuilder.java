@@ -2,7 +2,7 @@ package org.mule.module.apikit.builder;
 
 import static org.mule.module.Core.endpoint;
 import static org.mule.module.Core.flow;
-import static org.mule.module.Core.invoke;
+import static org.mule.module.Core.process;
 import static org.mule.module.core.builder.PropertiesBuilder.properties;
 
 import org.mule.api.MuleContext;
@@ -15,7 +15,6 @@ import org.mule.module.apikit.Configuration;
 import org.mule.module.apikit.MappingExceptionListener;
 import org.mule.module.apikit.RestMappingExceptionStrategy;
 import org.mule.module.apikit.Router;
-import org.mule.module.core.builder.MessageProcessorBuilder;
 import org.mule.module.core.builder.PrivateFlowBuilder;
 
 import java.util.ArrayList;
@@ -27,6 +26,20 @@ import org.raml.model.ActionType;
 
 public class RestRouterBuilder implements Builder<Flow>
 {
+
+    //constants
+    public static final String NOT_FOUND_EXCEPTION_CLASS_NAME = "org.mule.module.apikit.exception.NotFoundException";
+    public static final String METHOD_NOT_ALLOWED_EXCEPTION_CLASS_NAME = "org.mule.module.apikit.exception.MethodNotAllowedException";
+    public static final String UNSUPPORTED_MEDIA_TYPE_EXCEPTION_CLASS_NAME = "org.mule.module.apikit.exception.UnsupportedMediaTypeException";
+    public static final String NOT_ACCEPTABLE_EXCEPTION_CLASS_NAME = "org.mule.module.apikit.exception.NotAcceptableException";
+    public static final String BAD_REQUEST_EXCEPTION_CLASS_NAME = "org.mule.module.apikit.exception.BadRequestException";
+    public static final int NOT_FOUND_STATUS_CODE = 404;
+    public static final int METHOD_NOT_ALLOWED_STATUS_CODE = 405;
+    public static final int UNSOPORTED_MEDIA_TYPE_STATUS_CODE = 415;
+    public static final int NOT_ACCEPTABLE_STATUS_CODE = 406;
+    public static final int BAD_REQUEST_STATUS = 400;
+    public static final String APIKIT_EXCEPTION_STRATEGY_NAME = "rest-router-es";
+    public static final String APIKIT_FLOW_NAME = "RestRouterFlow";
 
 
     private String ramlPath;
@@ -76,7 +89,7 @@ public class RestRouterBuilder implements Builder<Flow>
     {
         if (resourceActionBuilders.isEmpty())
         {
-            throw new IllegalStateException("On method must be called before then.");
+            throw new IllegalStateException("'on(String resource, ActionType action)' method must be called before then().");
         }
         resourceActionBuilders.get(resourceActionBuilders.size() - 1).then(messageProcessorBuilder);
         return this;
@@ -93,11 +106,11 @@ public class RestRouterBuilder implements Builder<Flow>
         final Configuration config = new Configuration();
         config.setConsoleEnabled(consoleEnabled);
         config.setConsolePath(consolePath);
-
         config.setRaml(ramlPath);
-        final PrivateFlowBuilder restRouter = flow("RestRouterFlow")
+
+        final PrivateFlowBuilder restRouter = flow(APIKIT_FLOW_NAME)
                 .on(endpoint(address))
-                .then(invoke(Router.class).using(properties("config", config)))
+                .then(process(Router.class).using(properties("config", config)))
                 .onException(getExceptionBuilder());
         return restRouter.create(muleContext);
     }
@@ -110,13 +123,13 @@ public class RestRouterBuilder implements Builder<Flow>
             public MessagingExceptionHandler create(MuleContext muleContext)
             {
                 RestMappingExceptionStrategy es = new RestMappingExceptionStrategy();
-                es.setGlobalName("rest-router-es");
+                es.setGlobalName(APIKIT_EXCEPTION_STRATEGY_NAME);
                 List<MappingExceptionListener> exceptionListeners = new ArrayList<MappingExceptionListener>();
-                exceptionListeners.add(createExceptionListener(404, "org.mule.module.apikit.exception.NotFoundException"));
-                exceptionListeners.add(createExceptionListener(405, "org.mule.module.apikit.exception.MethodNotAllowedException"));
-                exceptionListeners.add(createExceptionListener(415, "org.mule.module.apikit.exception.UnsupportedMediaTypeException"));
-                exceptionListeners.add(createExceptionListener(406, "org.mule.module.apikit.exception.NotAcceptableException"));
-                exceptionListeners.add(createExceptionListener(400, "org.mule.module.apikit.exception.BadRequestException"));
+                exceptionListeners.add(createExceptionListener(NOT_FOUND_STATUS_CODE, NOT_FOUND_EXCEPTION_CLASS_NAME));
+                exceptionListeners.add(createExceptionListener(METHOD_NOT_ALLOWED_STATUS_CODE, METHOD_NOT_ALLOWED_EXCEPTION_CLASS_NAME));
+                exceptionListeners.add(createExceptionListener(UNSOPORTED_MEDIA_TYPE_STATUS_CODE, UNSUPPORTED_MEDIA_TYPE_EXCEPTION_CLASS_NAME));
+                exceptionListeners.add(createExceptionListener(NOT_ACCEPTABLE_STATUS_CODE, NOT_ACCEPTABLE_EXCEPTION_CLASS_NAME));
+                exceptionListeners.add(createExceptionListener(BAD_REQUEST_STATUS, BAD_REQUEST_EXCEPTION_CLASS_NAME));
                 es.setExceptionListeners(exceptionListeners);
                 return es;
             }

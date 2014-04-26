@@ -2,17 +2,17 @@ package org.mule.gulash.depedencies;
 
 import org.mule.dependency.DependencyManager;
 import org.mule.dependency.Module;
-import org.mule.gulash.depedencies.MvnFactory;
 import org.mule.module.core.BuilderConfigurationException;
 import org.mule.module.core.Mule;
 import org.mule.util.FileUtils;
+import org.mule.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.Artifact;
