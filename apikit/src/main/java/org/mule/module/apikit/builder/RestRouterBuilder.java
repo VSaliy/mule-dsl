@@ -1,6 +1,6 @@
 package org.mule.module.apikit.builder;
 
-import static org.mule.module.Core.endpoint;
+import static org.mule.module.Core.inbound;
 import static org.mule.module.Core.flow;
 import static org.mule.module.Core.process;
 import static org.mule.module.core.builder.PropertiesBuilder.properties;
@@ -78,6 +78,47 @@ public class RestRouterBuilder implements Builder<Flow>
         return this;
     }
 
+    public RestRouterBuilder onGet(String resource)
+    {
+        return on(resource, ActionType.GET);
+    }
+
+    public RestRouterBuilder onPost(String resource)
+    {
+        return on(resource, ActionType.POST);
+    }
+
+    public RestRouterBuilder onDelete(String resource)
+    {
+        return on(resource, ActionType.DELETE);
+    }
+
+    public RestRouterBuilder onHead(String resource)
+    {
+        return on(resource, ActionType.HEAD);
+    }
+
+    public RestRouterBuilder onTrace(String resource)
+    {
+        return on(resource, ActionType.TRACE);
+    }
+
+    public RestRouterBuilder onPut(String resource)
+    {
+        return on(resource, ActionType.PUT);
+    }
+
+    public RestRouterBuilder onPatch(String resource)
+    {
+        return on(resource, ActionType.PATCH);
+    }
+
+
+    public RestRouterBuilder onOptions(String resource)
+    {
+        return on(resource, ActionType.OPTIONS);
+    }
+
     public RestRouterBuilder on(String resource, ActionType action)
     {
         resourceActionBuilders.add(Core.flow(action.name().toLowerCase() + ":" + resource));
@@ -109,7 +150,7 @@ public class RestRouterBuilder implements Builder<Flow>
         config.setRaml(ramlPath);
 
         final PrivateFlowBuilder restRouter = flow(APIKIT_FLOW_NAME)
-                .on(endpoint(address))
+                .on(inbound(address))
                 .then(process(Router.class).using(properties("config", config)))
                 .onException(getExceptionBuilder());
         return restRouter.create(muleContext);

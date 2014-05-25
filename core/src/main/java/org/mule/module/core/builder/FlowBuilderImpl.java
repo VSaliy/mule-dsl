@@ -4,6 +4,7 @@ import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.api.exception.MessagingExceptionHandler;
 import org.mule.api.processor.MessageProcessor;
+import org.mule.api.processor.ProcessingStrategy;
 import org.mule.api.source.MessageSource;
 import org.mule.config.dsl.Builder;
 import org.mule.construct.Flow;

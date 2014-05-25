@@ -13,6 +13,7 @@ import org.mule.module.core.builder.FlowBuilder;
 import org.mule.module.core.builder.FlowBuilderImpl;
 import org.mule.module.core.builder.FlowRefBuilder;
 import org.mule.module.core.builder.ForeachBuilder;
+import org.mule.module.core.builder.OutboundEndpointBuilder;
 import org.mule.module.core.builder.WhenBuilder;
 import org.mule.module.core.builder.InboundEndpointBuilder;
 import org.mule.module.core.builder.JavaBeanElementBuilder;
@@ -91,14 +92,19 @@ public class Core
         return new JavaBeanElementBuilder<T>(globalElementClass);
     }
 
-    public static FlowRefBuilder ref(String flowName)
+    public static FlowRefBuilder callFlow(String flowName)
     {
         return new FlowRefBuilder(flowName);
     }
 
-    public static InboundEndpointBuilder endpoint(String address)
+    public static InboundEndpointBuilder inbound(String address)
     {
         return new InboundEndpointBuilder(address);
+    }
+
+    public static OutboundEndpointBuilder outbound(String address)
+    {
+        return new OutboundEndpointBuilder(address);
     }
 
     public static <T extends MessageProcessor> CustomMessageProcessorBuilder<T> process(Class<T> clazz)

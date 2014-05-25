@@ -3,6 +3,7 @@ package org.mule.module.tcp.builder;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.config.dsl.Builder;
+import org.mule.module.Tcp;
 import org.mule.transport.tcp.TcpConnector;
 import org.mule.transport.tcp.TcpMessageDispatcherFactory;
 import org.mule.transport.tcp.TcpProtocol;
@@ -13,7 +14,7 @@ import org.apache.commons.lang.StringUtils;
 public class TcpConfigurationBuilder implements Builder<TcpConnector>
 {
 
-    private Builder<TcpProtocol> protocolBuilder;
+    private Builder<TcpProtocol> protocolBuilder = Tcp.direct();
     private String name;
 
     public TcpConfigurationBuilder protocol(Builder<TcpProtocol> protocolBuilder)
@@ -57,6 +58,8 @@ public class TcpConfigurationBuilder implements Builder<TcpConnector>
 
     protected TcpConnector createConfig(MuleContext muleContext)
     {
-        return new TcpConnector(muleContext);
+        final TcpConnector tcpConnector = new TcpConnector(muleContext);
+
+        return tcpConnector;
     }
 }

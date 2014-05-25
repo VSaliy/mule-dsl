@@ -15,6 +15,7 @@ public class PollingTcpConfigurationBuilder implements Builder<PollingTcpConnect
 
     private Builder<TcpProtocol> protocolBuilder;
     private String name;
+    private int clientSoTimeout = 10000;
 
     public PollingTcpConfigurationBuilder protocol(Builder<TcpProtocol> protocolBuilder)
     {
@@ -44,6 +45,7 @@ public class PollingTcpConfigurationBuilder implements Builder<PollingTcpConnect
         {
             name = "PollingTcpConnector";
         }
+        tcpConnector.setClientSoTimeout(clientSoTimeout);
         tcpConnector.setName(name);
         try
         {

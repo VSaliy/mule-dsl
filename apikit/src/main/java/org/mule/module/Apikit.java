@@ -11,6 +11,4 @@ public class Apikit
         return new RestRouterBuilder(ramlPath);
     }
 
-
-
 }

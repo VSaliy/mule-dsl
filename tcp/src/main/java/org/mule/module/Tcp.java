@@ -11,12 +11,12 @@ import org.mule.module.tcp.builder.TcpConfigurationBuilder;
 public class Tcp
 {
 
-    public static TcpConfigurationBuilder config()
+    public static TcpConfigurationBuilder tcpConfig()
     {
         return new TcpConfigurationBuilder();
     }
 
-    public static PollingTcpConfigurationBuilder configPolling()
+    public static PollingTcpConfigurationBuilder tcpPollingConfig()
     {
         return new PollingTcpConfigurationBuilder();
     }

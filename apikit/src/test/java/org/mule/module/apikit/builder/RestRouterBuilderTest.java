@@ -1,4 +1,4 @@
-package org.mule.module.builder;
+package org.mule.module.apikit.builder;
 
 import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -9,6 +9,7 @@ import org.mule.module.core.Mule;
 
 import com.jayway.restassured.RestAssured;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.raml.model.ActionType;
@@ -30,7 +31,7 @@ public class RestRouterBuilderTest
         startApp();
         given().header("Accept", "*/*").body("hola")
                 .expect()
-                .response().body(containsString("hola"))
+                .response().body(CoreMatchers.containsString("hola"))
                 .statusCode(200)
                 .when().put("/api/forward");
     }
@@ -41,7 +42,7 @@ public class RestRouterBuilderTest
         startApp();
         given().header("Accept", "application/json").body("hola")
                 .expect()
-                .response().body(containsString(""))
+                .response().body(CoreMatchers.containsString(""))
                 .statusCode(406)
                 .when().put("/api/forward");
     }
@@ -52,7 +53,7 @@ public class RestRouterBuilderTest
         startApp();
         given().header("Accept", "*/*").body("hola")
                 .expect()
-                .response().body(containsString(""))
+                .response().body(CoreMatchers.containsString(""))
                 .statusCode(404)
                 .when().put("/api/notfound");
     }
@@ -63,7 +64,7 @@ public class RestRouterBuilderTest
         startApp();
         given().header("Accept", "*/*").body("hola")
                 .expect()
-                .response().body(containsString(""))
+                .response().body(CoreMatchers.containsString(""))
                 .statusCode(405)
                 .when().post("/api/forward");
     }
