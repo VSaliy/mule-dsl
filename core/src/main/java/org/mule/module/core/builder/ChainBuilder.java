@@ -12,11 +12,11 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class MessageProcessorChainBuilder extends AbstractPipelineBuilder implements MessageProcessorBuilder<MessageProcessorChain>
+public class ChainBuilder extends AbstractPipelineBuilder implements MessageProcessorBuilder<MessageProcessorChain>
 {
 
 
-    public MessageProcessorBuilder chain(Builder<? extends MessageProcessor>... messageProcessors)
+    public ChainBuilder chain(Builder<? extends MessageProcessor>... messageProcessors)
     {
         getMessageProcessorBuilders().addAll(Arrays.asList(messageProcessors));
         return this;

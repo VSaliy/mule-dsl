@@ -4,10 +4,9 @@ import org.mule.api.MuleContext;
 import org.mule.api.processor.MessageProcessor;
 import org.mule.api.routing.filter.Filter;
 import org.mule.config.dsl.Builder;
-import org.mule.module.FilterBuilder;
+import org.mule.module.Core;
 import org.mule.module.core.BuilderConfigurationException;
 import org.mule.routing.ChoiceRouter;
-import org.mule.routing.filters.ExpressionFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +16,18 @@ public class ChoiceBuilder implements Builder<ChoiceRouter>
 {
 
     private List<Filter> filters = new ArrayList<Filter>();
-    private List<MessageProcessorChainBuilder> routes = new ArrayList<MessageProcessorChainBuilder>();
-    private MessageProcessorChainBuilder otherwise;
-    private MessageProcessorChainBuilder current;
+    private List<ChainBuilder> routes = new ArrayList<ChainBuilder>();
+    private ChainBuilder otherwise;
+    private ChainBuilder current;
 
     public ChoiceBuilder on(String expression)
     {
-        return on(FilterBuilder.expression(expression));
+        return on(Core.expression(expression));
     }
 
     public ChoiceBuilder on(Filter filter)
     {
-        MessageProcessorChainBuilder route = new MessageProcessorChainBuilder();
+        ChainBuilder route = new ChainBuilder();
         routes.add(route);
         current = route;
         filters.add(filter);
@@ -37,7 +36,7 @@ public class ChoiceBuilder implements Builder<ChoiceRouter>
 
     public ChoiceBuilder otherwise()
     {
-        otherwise = new MessageProcessorChainBuilder();
+        otherwise = new ChainBuilder();
         current = otherwise;
         return this;
     }
@@ -61,7 +60,7 @@ public class ChoiceBuilder implements Builder<ChoiceRouter>
         for (int i = 0; i < filters.size(); i++)
         {
             Filter filter = filters.get(i);
-            MessageProcessorChainBuilder route = routes.get(i);
+            ChainBuilder route = routes.get(i);
             choiceRouter.addRoute(route.create(muleContext), filter);
         }
 

@@ -13,7 +13,7 @@ public class EnricherBuilder implements MessageProcessorBuilder<MessageEnricher>
 {
 
     private List<MessageEnricher.EnrichExpressionPair> enrichmentExpressions = new ArrayList<MessageEnricher.EnrichExpressionPair>();
-    private MessageProcessorChainBuilder chainBuilder = new MessageProcessorChainBuilder();
+    private ChainBuilder chainBuilder = new ChainBuilder();
 
     public EnricherBuilder(String target)
     {

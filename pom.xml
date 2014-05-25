@@ -9,17 +9,23 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <mule.version>3.5.0-M4</mule.version>
-        <apikit.version>1.3-SNAPSHOT</apikit.version>
+        <mule.version>3.5.0</mule.version>
+        <apikit.version>1.3</apikit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.7</jdk.version>
     </properties>
 
     <modules>
         <module>core</module>
+        <module>http</module>
+        <module>tcp</module>
+        <module>apikit</module>
+
         <module>mvn-dependency-manager</module>
-        <module>gulash</module>
         <module>dsl-devkit-plugin</module>
+        
+        <module>gulash</module>
+        
         <!--module>modules</module-->
 
     </modules>

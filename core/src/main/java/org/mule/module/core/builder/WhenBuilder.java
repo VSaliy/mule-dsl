@@ -6,10 +6,6 @@ import org.mule.api.routing.filter.Filter;
 import org.mule.config.dsl.Builder;
 import org.mule.module.core.processor.WhenMessageProcessor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 
 //when(bla)
 //  .then(log()).then(echo())
@@ -18,15 +14,15 @@ public class WhenBuilder implements MessageProcessorBuilder<WhenMessageProcessor
 {
 
     private Filter condition;
-    private MessageProcessorChainBuilder whenMessageProcessors;
-    private MessageProcessorChainBuilder otherwiseMessageProcessors;
+    private ChainBuilder whenMessageProcessors;
+    private ChainBuilder otherwiseMessageProcessors;
     private boolean otherwise = false;
 
     public WhenBuilder(Filter condition)
     {
         this.condition = condition;
-        this.whenMessageProcessors = new MessageProcessorChainBuilder();
-        this.otherwiseMessageProcessors = new MessageProcessorChainBuilder();
+        this.whenMessageProcessors = new ChainBuilder();
+        this.otherwiseMessageProcessors = new ChainBuilder();
     }
 
     public WhenBuilder then(Builder<MessageProcessor>... messageProcessorBuilders)
