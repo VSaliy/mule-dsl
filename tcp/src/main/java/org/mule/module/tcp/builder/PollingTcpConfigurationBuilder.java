@@ -4,6 +4,7 @@ package org.mule.module.tcp.builder;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleException;
 import org.mule.config.dsl.Builder;
+import org.mule.module.core.TimePeriod;
 import org.mule.transport.tcp.PollingTcpConnector;
 import org.mule.transport.tcp.TcpMessageDispatcherFactory;
 import org.mule.transport.tcp.TcpProtocol;
@@ -16,10 +17,17 @@ public class PollingTcpConfigurationBuilder implements Builder<PollingTcpConnect
     private Builder<TcpProtocol> protocolBuilder;
     private String name;
     private int clientSoTimeout = 10000;
+    private Long frequency;
 
     public PollingTcpConfigurationBuilder protocol(Builder<TcpProtocol> protocolBuilder)
     {
         this.protocolBuilder = protocolBuilder;
+        return this;
+    }
+
+    public PollingTcpConfigurationBuilder every(long time, TimePeriod period)
+    {
+        this.frequency = period.toMillis(time);
         return this;
     }
 
@@ -37,6 +45,10 @@ public class PollingTcpConfigurationBuilder implements Builder<PollingTcpConnect
         if (protocolBuilder != null)
         {
             tcpConnector.setTcpProtocol(protocolBuilder.create(muleContext));
+        }
+        if(frequency != null)
+        {
+            tcpConnector.setPollingFrequency(frequency);
         }
 
         final TcpMessageDispatcherFactory dispatcherFactory = new TcpMessageDispatcherFactory();
