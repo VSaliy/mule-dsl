@@ -27,7 +27,9 @@ import org.mule.devkit.model.code.builders.FieldBuilder;
 import org.mule.devkit.model.module.Module;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.lang.model.type.TypeMirror;
 
@@ -166,11 +168,30 @@ public abstract class AbstractBuilderGenerator implements ModuleGenerator
         final GeneratedExpression defaultValueGeneratedExpression = getDefaultValueExpression(type, defaultValue);
         final GeneratedField field = new FieldBuilder(processorBuilderClass).name(fieldName).type(type).privateVisibility().initialValue(defaultValueGeneratedExpression).build();
         final GeneratedMethod fieldExpressionMethod = processorBuilderClass.method(Modifier.PUBLIC, processorBuilderClass, fieldName);
-        fieldExpressionMethod.param(type, fieldName);
+
         final GeneratedBlock fieldMethodBody = fieldExpressionMethod.body();
-        fieldMethodBody.assign(ExpressionFactory.refthis(fieldName), ExpressionFactory.ref(fieldName));
+        if (isMap(type))
+        {
+            fieldExpressionMethod.param(refMapBuilderType(), fieldName);
+            fieldMethodBody.assign(ExpressionFactory.refthis(fieldName), ExpressionFactory.ref(fieldName).invoke("build"));
+        }
+        else
+        {
+            fieldExpressionMethod.param(type, fieldName);
+            fieldMethodBody.assign(ExpressionFactory.refthis(fieldName), ExpressionFactory.ref(fieldName));
+        }
         fieldMethodBody._return(ExpressionFactory._this());
         return field;
+    }
+
+    protected org.mule.devkit.model.code.Type refMapBuilderType()
+    {
+        return ref("org.mule.module.core.builder.MapBuilder");
+    }
+
+    protected boolean isMap(org.mule.devkit.model.code.Type type)
+    {
+        return type.fullName().contains(Map.class.getName()) || type.fullName().contains(HashMap.class.getName());
     }
 
     private GeneratedExpression getDefaultValueExpression(org.mule.devkit.model.code.Type fieldType, String defaultValue)

@@ -18,6 +18,7 @@ import org.mule.devkit.model.code.GeneratedMethod;
 import org.mule.devkit.model.code.GeneratedTry;
 import org.mule.devkit.model.code.GeneratedVariable;
 import org.mule.devkit.model.code.Modifier;
+import org.mule.devkit.model.code.Type;
 import org.mule.devkit.model.code.builders.FieldBuilder;
 import org.mule.devkit.model.module.Module;
 
@@ -84,8 +85,17 @@ public class GlobalConfigBuilderGenerator extends AbstractBuilderGenerator
 
         for (GeneratedField constructorField : constructorFields)
         {
-            processorFactoryMethod.param(constructorField.type(), constructorField.name());
-            newExpression.arg(ExpressionFactory.ref(constructorField.name()));
+            final Type type = constructorField.type();
+            if (isMap(type))
+            {
+                processorFactoryMethod.param(refMapBuilderType(), constructorField.name());
+                newExpression.arg(ExpressionFactory.ref(constructorField.name()).invoke("build"));
+            }
+            else
+            {
+                processorFactoryMethod.param(type, constructorField.name());
+                newExpression.arg(ExpressionFactory.ref(constructorField.name()));
+            }
         }
         processorFactoryMethod.body()._return(newExpression);
 

@@ -13,6 +13,8 @@ import org.mule.module.core.builder.FlowBuilder;
 import org.mule.module.core.builder.FlowBuilderImpl;
 import org.mule.module.core.builder.FlowRefBuilder;
 import org.mule.module.core.builder.ForeachBuilder;
+import org.mule.module.core.builder.InlineMessageProcessorBuilder;
+import org.mule.module.core.builder.MapBuilder;
 import org.mule.module.core.builder.OutboundEndpointBuilder;
 import org.mule.module.core.builder.WhenBuilder;
 import org.mule.module.core.builder.InboundEndpointBuilder;
@@ -28,6 +30,7 @@ import org.mule.routing.filters.logic.NotFilter;
 import org.mule.routing.filters.logic.OrFilter;
 
 import java.util.Arrays;
+import java.util.Map;
 
 public class Core
 {
@@ -110,6 +113,22 @@ public class Core
     public static <T extends MessageProcessor> CustomMessageProcessorBuilder<T> process(Class<T> clazz)
     {
         return new CustomMessageProcessorBuilderImpl<T>(clazz);
+    }
+
+    public static <T extends MessageProcessor> CustomMessageProcessorBuilder<T> process(Class<T> clazz, Map<String, Object> properties)
+    {
+        return new CustomMessageProcessorBuilderImpl<T>(clazz, properties);
+    }
+
+    public static InlineMessageProcessorBuilder process(MessageProcessor messageProcessor)
+    {
+        return new InlineMessageProcessorBuilder(messageProcessor);
+    }
+
+
+    public static <K, V> MapBuilder<K, V> map(K key)
+    {
+        return new MapBuilder<K, V>(key);
     }
 
 

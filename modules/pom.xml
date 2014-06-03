@@ -36,8 +36,8 @@
         <module>mule-module-rover</module>
         <module>mule-module-twitter</module>
         <module>mule-module-webcam</module>
-        <module>mule-module-jira</module>
-        <module>mule-module-netty</module>
+        <module>mule-module-esper</module>
+
     </modules>
 
     <build>
