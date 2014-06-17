@@ -1,15 +1,9 @@
 declare(
         flow("Hello")
                 .then(log("#[payload]"))
-                .then(process(
-                {
-                    message ->
-                        println("function called");
-                        println(message.payload)
-                        return "OK"
-                }
-        )
-        )
+
+
+
 );
 
 onStart({

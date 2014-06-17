@@ -11,17 +11,13 @@
  */
 package org.mule.module.esper;
 
-import org.mule.api.ConnectionException;
-import org.mule.api.MuleContext;
 import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Module;
 import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.Source;
-import org.mule.api.annotations.lifecycle.Start;
 import org.mule.api.annotations.param.Default;
 import org.mule.api.annotations.param.Optional;
 import org.mule.api.callback.SourceCallback;
-import org.mule.api.context.MuleContextAware;
 
 import com.espertech.esper.client.Configuration;
 import com.espertech.esper.client.EPServiceProvider;
@@ -30,7 +26,6 @@ import com.espertech.esper.client.EPStatement;
 import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.SafeIterator;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,10 +40,8 @@ import org.w3c.dom.Node;
 /**
  * A Mule Module for <a href="http://esper.codehaus.org/">Esper</a>, a GPL licensed complex event processing
  * engine.
- *
- * @author John D'Emic <john.demic@mulesoft.com>
  */
-@Module(name = "esper", schemaVersion = "1.0", poolable = false, minMuleVersion = "3.3", friendlyName = "Esper")
+@Module(name = "esper", schemaVersion = "1.0", poolable = false, friendlyName = "Esper")
 public class EsperModule
 {
 
@@ -66,19 +59,18 @@ public class EsperModule
     private Map<String, Class> events;
 
 
-    public void setEvents(Map<String, Class> events)
-    {
-        this.events = events;
-    }
-
-
     @PostConstruct
     public void initialize()
     {
+
         Configuration configuration = new Configuration();
-        for (Map.Entry<String, Class> eventEntry : events.entrySet())
+        if (events != null)
         {
-            configuration.addEventType(eventEntry.getKey(), eventEntry.getValue());
+            for (Map.Entry<String, Class> eventEntry : events.entrySet())
+            {
+                configuration.addEventType(eventEntry.getKey(), eventEntry.getValue());
+            }
+
         }
         esperServiceProvider = EPServiceProviderManager.getDefaultProvider(configuration);
     }
@@ -86,7 +78,10 @@ public class EsperModule
     @PreDestroy
     public void disconnect()
     {
-        logger.debug("Destroying EsperServiceProvider");
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Destroying EsperServiceProvider");
+        }
         esperServiceProvider.destroy();
     }
 
@@ -105,17 +100,16 @@ public class EsperModule
     @Processor(name = "sendEvent")
     public void sendEvent(@Optional @Default("#[payload]") Object eventPayload, @Optional String eventName)
     {
-        logger.debug(String.format("Sending event %s to stream", eventPayload));
-
-        /*
-   ToDo work out a way here to dynamically register event types and not cause listeners to fail on
-   Mule startup (chicken before egg.) */
+        if (logger.isDebugEnabled())
+        {
+            logger.debug(String.format("Sending event %s to stream", eventPayload));
+        }
 
         if (eventPayload instanceof Map)
         {
             if (StringUtils.isBlank(eventName))
             {
-                throw new EsperException("event-name must be specified with map events");
+                throw new EsperException("The attribute eventName must be specified with map events.");
             }
 
             esperServiceProvider.getEPRuntime().sendEvent((Map) eventPayload, eventName);
@@ -141,9 +135,12 @@ public class EsperModule
     @Source
     public void listenEvent(String statement, final SourceCallback callback)
     {
-        logger.debug("Listening for events with statement: " + statement);
-        EPStatement s = esperServiceProvider.getEPAdministrator().createEPL(statement);
-        s.addListener(new SourceCallbackUpdateListener(callback));
+        if (logger.isDebugEnabled())
+        {
+            logger.debug("Listening for events with statement: " + statement);
+        }
+        EPStatement epStatement = esperServiceProvider.getEPAdministrator().createEPL(statement);
+        epStatement.addListener(new SourceCallbackUpdateListener(callback));
     }
 
 
@@ -191,12 +188,12 @@ public class EsperModule
 
             if (safeIterator.hasNext())
             {
-                logger.warn("Statement contains more then one response");
+                logger.warn("Statement contains more then one response.");
             }
 
             if (!result)
             {
-                logger.debug("Not passing message, filter expression evaluated to true");
+                logger.debug("Not passing message, filter expression evaluated to true.");
             }
             else
             {
@@ -215,9 +212,15 @@ public class EsperModule
 
     }
 
-
+    //Getter setter methods
     public Map<String, Class> getEvents()
     {
         return events;
     }
+
+    public void setEvents(Map<String, Class> events)
+    {
+        this.events = events;
+    }
+
 }

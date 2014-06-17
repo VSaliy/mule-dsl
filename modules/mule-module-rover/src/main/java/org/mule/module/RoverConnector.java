@@ -10,34 +10,20 @@
  */
 package org.mule.module;
 
-import org.mule.api.MuleException;
 import org.mule.api.annotations.Module;
-import org.mule.api.annotations.Source;
-import org.mule.api.annotations.SourceThreadingModel;
+import org.mule.api.annotations.Processor;
 import org.mule.api.annotations.lifecycle.Start;
 import org.mule.api.annotations.lifecycle.Stop;
-import org.mule.api.annotations.Configurable;
-import org.mule.api.annotations.Processor;
-import org.mule.api.callback.SourceCallback;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinDigitalInput;
-import com.pi4j.io.gpio.GpioPinDigitalMultipurpose;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.PinMode;
-import com.pi4j.io.gpio.PinPullResistance;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
-import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
-import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.system.NetworkInfo;
 import com.pi4j.system.SystemInfo;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Cloud Connector

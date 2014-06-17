@@ -62,6 +62,7 @@ public class InboundEndpointBuilder implements Builder<InboundEndpoint>
             }
 
             endpointURIEndpointBuilder.setMuleContext(muleContext);
+
             final InboundEndpoint inboundEndpoint = endpointURIEndpointBuilder.buildInboundEndpoint();
             muleContext.getRegistry().registerEndpoint(inboundEndpoint);
             return inboundEndpoint;

@@ -3,18 +3,16 @@ package org.mule.module.webcam;
 import org.mule.api.annotations.Configurable;
 import org.mule.api.annotations.Module;
 import org.mule.api.annotations.Processor;
+import org.mule.api.annotations.Source;
 import org.mule.api.annotations.lifecycle.Start;
 import org.mule.api.annotations.lifecycle.Stop;
 import org.mule.api.annotations.param.Default;
+import org.mule.api.annotations.param.Optional;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.imageio.ImageIO;
 
 import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.MBFImage;
@@ -50,20 +48,34 @@ public class WebcamModule
     }
 
     /**
-     * Takes a snapshot
+     * Takes a picture using the default camera.;
      *
-     * @return
+     * @return The input stream of the picture that was taken.
      * @throws IOException
      */
     @Processor
     public InputStream takePicture() throws IOException
     {
-
-
         final MBFImage snapshot = vc.getNextFrame();
         final ByteArrayOutputStream output = new ByteArrayOutputStream();
         ImageUtilities.write(snapshot, "PNG", output);
         return new ByteArrayInputStream(output.toByteArray());
+    }
+
+    /**
+     * Find a face if possible at the given image.
+     *
+     * @param inputStream The image where to find the face
+     * @return The face.
+     * @throws IOException
+     */
+    @Processor
+    public InputStream detectFace(@Optional @Default("#[payload]") InputStream inputStream) throws IOException
+    {
+        final MBFImage fImages = ImageUtilities.readMBF(inputStream);
+
+        //Todo finish implementation
+        return null;
     }
 
     public int getWidth()

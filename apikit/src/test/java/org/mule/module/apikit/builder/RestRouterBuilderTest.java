@@ -1,7 +1,6 @@
 package org.mule.module.apikit.builder;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.mule.module.Apikit.api;
 import static org.mule.module.Core.log;
 import org.mule.api.MuleException;
@@ -10,25 +9,45 @@ import org.mule.module.core.Mule;
 import com.jayway.restassured.RestAssured;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.raml.model.ActionType;
 
 public class RestRouterBuilderTest
 {
 
 
+    final int port = 8081;
+    final Mule mule = new Mule();
+
     @Before
-    public void setup()
+    public void setup() throws MuleException
     {
-        RestAssured.port = 8081;
+
+        RestAssured.port = port;
+        startApp();
+    }
+
+
+    @After
+    public void after()
+    {
+
+        try
+        {
+            mule.stop();
+        }
+        catch (MuleException e)
+        {
+            e.printStackTrace();
+        }
     }
 
 
     @Test
     public void simple() throws MuleException
     {
-        startApp();
+
         given().header("Accept", "*/*").body("hola")
                 .expect()
                 .response().body(CoreMatchers.containsString("hola"))
@@ -36,48 +55,13 @@ public class RestRouterBuilderTest
                 .when().put("/api/forward");
     }
 
-    @Test
-    public void notAcceptable() throws MuleException
-    {
-        startApp();
-        given().header("Accept", "application/json").body("hola")
-                .expect()
-                .response().body(CoreMatchers.containsString(""))
-                .statusCode(406)
-                .when().put("/api/forward");
-    }
-
-    @Test
-    public void notFound() throws MuleException
-    {
-        startApp();
-        given().header("Accept", "*/*").body("hola")
-                .expect()
-                .response().body(CoreMatchers.containsString(""))
-                .statusCode(404)
-                .when().put("/api/notfound");
-    }
-
-    @Test
-    public void methodNotAllowed() throws MuleException
-    {
-        startApp();
-        given().header("Accept", "*/*").body("hola")
-                .expect()
-                .response().body(CoreMatchers.containsString(""))
-                .statusCode(405)
-                .when().post("/api/forward");
-    }
 
     private void startApp() throws MuleException
     {
-        Mule mule = new Mule();
+
         mule.declare(
-                api("rover.raml")
-                        .on("/forward", ActionType.PUT)
-                        .then(
-                                log("#[payload]")
-                        )
+                api("rover.raml").baseUri("http://localhost:" + port + "/api")
+                        .onPut("/forward").then(log("#[payload]"))
         );
         mule.start();
     }

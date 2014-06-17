@@ -10,13 +10,13 @@
     </description>
 
     <parent>
-        <groupId>org.mule.gulash</groupId>
-        <artifactId>gulash-parent</artifactId>
+        <groupId>org.mule.feather</groupId>
+        <artifactId>feather-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.mule.modules</groupId>
-    <artifactId>mule-gulash-modules</artifactId>
+    <artifactId>feather-modules</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -50,7 +50,7 @@
                     <extensions>true</extensions>
                     <dependencies>
                         <dependency>
-                            <groupId>org.mule.gulash</groupId>
+                            <groupId>org.mule.feather</groupId>
                             <artifactId>dsl-devkit-plugin</artifactId>
                             <version>1.0-SNAPSHOT</version>
                         </dependency>

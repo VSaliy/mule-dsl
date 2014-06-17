@@ -150,7 +150,7 @@ public class RestRouterBuilder implements Builder<Flow>
         config.setRaml(ramlPath);
 
         final PrivateFlowBuilder restRouter = flow(APIKIT_FLOW_NAME)
-                .on(inbound(address))
+                .on(inbound(address).requestResponse())
                 .then(process(Router.class).using(properties("config", config)))
                 .onException(getExceptionBuilder());
         return restRouter.create(muleContext);

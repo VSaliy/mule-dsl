@@ -10,14 +10,14 @@ public class LoggerBuilder implements MessageProcessorBuilder<LoggerMessageProce
 {
 
     private String message;
-    private String level;
+    private LoggerLevel level;
 
     public LoggerBuilder(String message)
     {
         this.message = message;
     }
 
-    public LoggerBuilder as(String level)
+    public LoggerBuilder as(LoggerLevel level)
     {
         this.level = level;
         return this;
@@ -32,9 +32,9 @@ public class LoggerBuilder implements MessageProcessorBuilder<LoggerMessageProce
         {
             logger.setMessage(message);
         }
-        if (!StringUtils.isEmpty(level))
+        if (level != null)
         {
-            logger.setLevel(level);
+            logger.setLevel(level.getLevel());
         }
         return logger;
     }

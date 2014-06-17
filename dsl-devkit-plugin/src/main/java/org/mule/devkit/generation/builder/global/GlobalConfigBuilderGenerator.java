@@ -76,7 +76,8 @@ public class GlobalConfigBuilderGenerator extends AbstractBuilderGenerator
         generatedTry.body().assign(registry, ExpressionFactory.invoke(ExpressionFactory.ref(CONTEXT_ARG_NAME), "getRegistry"));
         generatedTry.body().invoke(registry, "registerObject").arg(ExpressionFactory.ref(NAME_FIELD_NAME)).arg(resultVariable);
         GeneratedCatchBlock generatedCatchBlock = generatedTry._catch(ref(Exception.class));
-        generatedCatchBlock.param("e");
+        final GeneratedVariable exceptionParameter = generatedCatchBlock.param("e");
+        generatedCatchBlock.body()._throw(ExpressionFactory._new(ref(RuntimeException.class)).arg(ExpressionFactory.lit("Exception while trying to register object.")).arg(exceptionParameter));
         createMethodBlock._return(resultVariable);
 
         //Static Factory method for builder

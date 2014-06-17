@@ -1,35 +1,26 @@
 package org.mule.module.esper;
 
-import org.mule.api.MuleEvent;
-import org.mule.api.MuleException;
-import org.mule.api.processor.MessageProcessor;
-import org.mule.module.Core;
+import static org.mule.module.Core.flow;
+import static org.mule.module.Core.log;
+import static org.mule.module.Core.map;
 import org.mule.module.Esper;
 import org.mule.module.core.Mule;
-
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
-
-import static org.mule.module.Core.*;
+import org.mule.module.core.builder.LoggerLevel;
 
 /**
- * Created by machaval on 5/30/14.
+ * Created by machaval on 6/4/14.
  */
-public class EsperTest
+public class EsperExample
 {
 
-    @Test
-    public void basicEsperTest() throws MuleException, InterruptedException
+    public static void main(String[] args) throws Exception
     {
-
-        //final Integer[] result = new Integer[] {0};
         Mule mule = new Mule();
         mule.declare(Esper.config(map("SensorEvent").to(SensorEvent.class)).as("SensorEvent"));
         mule.declare(
                 flow("TriggerEvent")
                         .on(Esper.listenEvent(withTemperatureMoreThan50()).using("SensorEvent"))
-                        .then(log("#[payload]"))
+                        .then(log("Message Received at ---> #[payload.temperature]").as(LoggerLevel.INFO))
 
         );
         mule.declare(
@@ -43,21 +34,21 @@ public class EsperTest
 
 
         int i = 0;
-        while (i < 100)
+        while (i < 100000000)
         {
             mule.callFlow("DispatchEvent", new SensorEvent(i, "sensor1"));
             i++;
+            Thread.sleep(1000L);
         }
-
-        //  Thread.sleep(1000L);
-        // Assert.assertThat(result[0], CoreMatchers.is(50));
 
 
     }
 
-    private String withTemperatureMoreThan50()
+
+    private static String withTemperatureMoreThan50()
     {
         return "select * from SensorEvent.win:length(5) having temperature >= 50";
     }
+
 
 }

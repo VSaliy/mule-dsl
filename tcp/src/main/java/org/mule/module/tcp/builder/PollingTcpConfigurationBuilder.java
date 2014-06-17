@@ -46,7 +46,7 @@ public class PollingTcpConfigurationBuilder implements Builder<PollingTcpConnect
         {
             tcpConnector.setTcpProtocol(protocolBuilder.create(muleContext));
         }
-        if(frequency != null)
+        if (frequency != null)
         {
             tcpConnector.setPollingFrequency(frequency);
         }
@@ -65,7 +65,7 @@ public class PollingTcpConfigurationBuilder implements Builder<PollingTcpConnect
         }
         catch (MuleException e)
         {
-
+            throw new RuntimeException(e);
         }
         return tcpConnector;
     }

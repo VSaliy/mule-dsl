@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.mule.gulash</groupId>
-        <artifactId>gulash-parent</artifactId>
+        <groupId>org.mule.feather</groupId>
+        <artifactId>feather-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <artifactId>gulash</artifactId>
@@ -79,13 +79,13 @@
     <dependencies>
         <!-- Gulash modules -->
         <dependency>
-            <groupId>org.mule.gulash</groupId>
+            <groupId>org.mule.feather</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.mule.gulash</groupId>
+            <groupId>org.mule.feather</groupId>
             <artifactId>mvn-dependency-manager</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -97,6 +97,11 @@
             <version>${mule.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.mule.feather</groupId>
+            <artifactId>apikit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.mule</groupId>
