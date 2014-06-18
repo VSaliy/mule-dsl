@@ -1,14 +1,12 @@
 package org.mule.me.launcher;
 
 
-import org.mule.gulash.GroovyRunner;
-import org.mule.module.core.Mule;
+import org.mule.gulash.GulashApplication;
+import org.mule.module.core.launcher.MuleApplicationLauncher;
 
 import java.io.File;
 import java.net.URL;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -21,16 +19,8 @@ public class GroovyRunnerTest
     public void simpleTest() throws Exception
     {
         URL resource = getClass().getClassLoader().getResource("test.groovy");
-
-        new GroovyRunner().run(new File(resource.toURI()), new String[0], new Mule());
+        new MuleApplicationLauncher().start(new GulashApplication(new File(resource.toURI())));
     }
 
-    @Test
-    @Ignore
-    public void twitterTest() throws Exception
-    {
-        URL resource = getClass().getClassLoader().getResource("twitter.groovy");
 
-        new GroovyRunner().run(new File(resource.toURI()), new String[]{"Probando 1 2 3 4"}, new Mule());
-    }
 }

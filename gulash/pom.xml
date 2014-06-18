@@ -86,7 +86,13 @@
 
         <dependency>
             <groupId>org.mule.feather</groupId>
-            <artifactId>mvn-dependency-manager</artifactId>
+            <artifactId>mvn-dependency</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mule.feather</groupId>
+            <artifactId>dependency-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 

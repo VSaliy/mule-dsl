@@ -12,7 +12,8 @@ import org.mule.common.Result;
 import org.mule.common.TestResult;
 import org.mule.common.Testable;
 import org.mule.config.dsl.Builder;
-import org.mule.dependency.ModuleBuilder;
+import org.mule.dependency.DependencyModuleBuilder;
+import org.mule.dependency.ModuleDependencyManager;
 import org.mule.module.core.Mule;
 import org.mule.module.core.StartListener;
 
@@ -46,7 +47,7 @@ public abstract class MuleBaseScript extends Script
 
     public File getMuleHome()
     {
-        return getMule().getMuleHome();
+        return getMule().getMuleAppHome();
     }
 
     public Mule onStart(final Closure listener)
@@ -76,9 +77,9 @@ public abstract class MuleBaseScript extends Script
         return getMule().lookup(clazz);
     }
 
-    public ModuleBuilder require(String moduleName)
+    public DependencyModuleBuilder require(String moduleName)
     {
-        return getMule().require(moduleName);
+        return getDependencyManager().require(moduleName);
     }
 
     public Mule getMule()
@@ -87,48 +88,10 @@ public abstract class MuleBaseScript extends Script
     }
 
 
-    public void test(String configName)
+    public ModuleDependencyManager getDependencyManager()
     {
-        try
-        {
-            getMule().build();
-            final Object config = getMule().get(configName);
-            if (config instanceof Testable)
-            {
-                getMule().getMuleContext().getRegistry().applyLifecycle(config, Initialisable.PHASE_NAME);
-                try
-                {
-                    final TestResult test = ((Testable) config).test();
-                    if (test.getStatus() == Result.Status.SUCCESS)
-                    {
-                        System.out.println("The configuration '" + configName + "' was successfully configured.");
-                    }
-                    else
-                    {
-                        System.out.println("The configuration '" + configName + "' has an error : \n" + test.getMessage() + ".");
-                    }
-                }
-                finally
-                {
-                    getMule().getMuleContext().getRegistry().applyLifecycle(config, Stoppable.PHASE_NAME);
-                }
-
-            }
-
-        }
-        catch (InitialisationException e)
-        {
-            System.out.println("Error while initializing configuration " + e.getMessage());
-        }
-        catch (ConfigurationException e)
-        {
-            System.out.println("Error while initializing configuration " + e.getMessage());
-        }
-        catch (MuleException e)
-        {
-            System.out.println("Error while initializing configuration " + e.getMessage());
-        }
-        System.out.println("Configuration " + configName + " is not testable.");
+        return (ModuleDependencyManager) getBinding().getVariable("dependency");
     }
+
 
 }

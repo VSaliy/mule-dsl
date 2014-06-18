@@ -18,10 +18,6 @@ import org.mule.config.builders.DefaultsConfigurationBuilder;
 import org.mule.config.dsl.Builder;
 import org.mule.construct.Flow;
 import org.mule.context.DefaultMuleContextFactory;
-import org.mule.dependency.DependencyManager;
-import org.mule.dependency.DummyDependencyManagerImpl;
-import org.mule.dependency.Module;
-import org.mule.dependency.ModuleBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,41 +31,19 @@ public class Mule
     private List<Builder<?>> builders = new ArrayList<Builder<?>>();
     private MuleContext muleContext;
     private List<StartListener> startListeners = new ArrayList<StartListener>();
-    private File muleHome;
-    private ModuleClassLoader muleClassLoader;
-    private List<ModuleBuilder> moduleBuilders = new ArrayList<ModuleBuilder>();
+    private File muleAppHome;
 
 
-    private DependencyManager resolver;
-
-    public Mule(File muleHome, DependencyManager dependencyManager)
+    public Mule(File muleAppHome)
     {
-        this.muleHome = muleHome;
-        setup();
+        this.muleAppHome = muleAppHome;
     }
 
     public Mule()
     {
-        this(new File("."), new DummyDependencyManagerImpl());
+        this(new File("."));
     }
 
-
-    public DependencyManager getResolver()
-    {
-        return resolver;
-    }
-
-    public void setResolver(DependencyManager resolver)
-    {
-        this.resolver = resolver;
-    }
-
-    public ModuleBuilder require(String module)
-    {
-        final ModuleBuilder result = new ModuleBuilder(module);
-        moduleBuilders.add(result);
-        return result;
-    }
 
     public Mule declare(Builder<?> builder)
     {
@@ -77,23 +51,6 @@ public class Mule
         return this;
     }
 
-
-    public ModuleClassLoader getMuleClassLoader()
-    {
-        return muleClassLoader;
-    }
-
-    private void setup()
-    {
-        ClassLoader executionClassLoader = Thread.currentThread().getContextClassLoader();
-        muleClassLoader = new ModuleClassLoader(executionClassLoader);
-    }
-
-
-    public File getLibDirectory()
-    {
-        return new File(getMuleHome(), ".lib");
-    }
 
     public Mule start() throws MuleException
     {
@@ -109,22 +66,13 @@ public class Mule
         return this;
     }
 
-    public void build()
+    private void build()
     {
         for (Builder<?> builder : builders)
         {
             builder.create(muleContext);
         }
-
-        for (ModuleBuilder moduleBuilder : moduleBuilders)
-        {
-            final Module module = moduleBuilder.create();
-            final String name = module.getName();
-            getMuleClassLoader().installModule(name, resolver.installModule(module, this));
-        }
-
         builders.clear();
-        moduleBuilders.clear();
     }
 
     private void initMuleContext() throws InitialisationException, ConfigurationException
@@ -132,7 +80,7 @@ public class Mule
         if (muleContext == null)
         {
             final Properties properties = new Properties();
-            properties.put(MuleProperties.APP_HOME_DIRECTORY_PROPERTY, muleHome.getAbsolutePath());
+            properties.put(MuleProperties.APP_HOME_DIRECTORY_PROPERTY, muleAppHome.getAbsolutePath());
             muleContext = new DefaultMuleContextFactory().createMuleContext(new DefaultsConfigurationBuilder(), properties, new DefaultMuleConfiguration());
         }
     }
@@ -149,9 +97,9 @@ public class Mule
         return this;
     }
 
-    public File getMuleHome()
+    public File getMuleAppHome()
     {
-        return muleHome;
+        return muleAppHome;
     }
 
     public Mule onStart(StartListener listener)

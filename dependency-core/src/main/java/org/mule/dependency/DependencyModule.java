@@ -3,14 +3,14 @@ package org.mule.dependency;
 /**
  * Created by machaval on 4/21/14.
  */
-public class Module
+public class DependencyModule
 {
 
     private String name;
     private String version;
     private String url;
 
-    public Module(String name, String version, String url)
+    public DependencyModule(String name, String version, String url)
     {
         this.name = name;
         this.version = version;

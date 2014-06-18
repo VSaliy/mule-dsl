@@ -1,4 +1,4 @@
-package org.mule.module.core;
+package org.mule.dependency;
 
 import org.mule.util.FileUtils;
 

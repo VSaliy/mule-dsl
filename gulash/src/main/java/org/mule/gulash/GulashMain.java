@@ -1,10 +1,10 @@
 package org.mule.gulash;
 
 
-import org.mule.dependency.DependencyManager;
-import org.mule.gulash.depedencies.MavenDependencyManager;
-import org.mule.dependency.ModuleBuilder;
+import org.mule.dependency.DependencyModuleBuilder;
+import org.mule.gulash.depedencies.MavenDependencyHandler;
 import org.mule.module.core.Mule;
+import org.mule.module.core.launcher.MuleApplicationLauncher;
 
 import java.io.File;
 import java.util.List;
@@ -34,8 +34,9 @@ public class GulashMain
     {
 
         final File muleHome = new File(".");
-        final DependencyManager mavenDependencyManager = new MavenDependencyManager();
-        final Mule mule = new Mule(muleHome, mavenDependencyManager);
+        final MavenDependencyHandler mavenDependencyHandler = new MavenDependencyHandler();
+
+        final Mule mule = new Mule(muleHome);
         final Options options = createOptions();
 
         // create the parser
@@ -59,18 +60,18 @@ public class GulashMain
                 if (line.hasOption(REQUIRE_OPTION))
                 {
                     final String moduleName = line.getOptionValue(REQUIRE_OPTION);
-                    final ModuleBuilder moduleBuilder = new ModuleBuilder(moduleName);
+                    final DependencyModuleBuilder dependencyModuleBuilder = new DependencyModuleBuilder(moduleName);
                     if (line.hasOption(VERSION_OPTION))
                     {
-                        moduleBuilder.version(line.getOptionValue(VERSION_OPTION));
+                        dependencyModuleBuilder.version(line.getOptionValue(VERSION_OPTION));
                     }
-                    mavenDependencyManager.installModule(moduleBuilder.create(), mule);
+                    mavenDependencyHandler.getModule(dependencyModuleBuilder.create(), mule.getMuleAppHome());
                 }
                 else if (line.hasOption(LIST_OPTION))
                 {
 
                     final String moduleName = line.getOptionValue(LIST_OPTION);
-                    final List<String> versions = mavenDependencyManager.listVersions(moduleName);
+                    final List<String> versions = mavenDependencyHandler.listVersions(moduleName, mule.getMuleAppHome());
                     if (versions.isEmpty())
                     {
                         System.out.println("NO VERSION of " + moduleName + " was found");
@@ -86,21 +87,16 @@ public class GulashMain
                 }
                 else if (line.hasOption(CLEAN_OPTION))
                 {
-                    mule.getLibDirectory().delete();
+                    mavenDependencyHandler.getLibDirectory(muleHome).delete();
                 }
                 else
                 {
                     String[] argsArray = line.getArgs();
                     if (!ArrayUtils.isEmpty(argsArray))
                     {
-                        final GroovyRunner groovyRunner = new GroovyRunner();
-                        groovyRunner.run(new File(argsArray[0]), (String[]) ArrayUtils.remove(argsArray, 0), mule);
+                        new MuleApplicationLauncher(argsArray).start(new GulashApplication(new File(argsArray[0])));
                     }
-                    else
-                    {
-                        final InteractiveGroovyRunner groovyRunner = new InteractiveGroovyRunner();
-                        groovyRunner.run(mule);
-                    }
+
                 }
             }
         }

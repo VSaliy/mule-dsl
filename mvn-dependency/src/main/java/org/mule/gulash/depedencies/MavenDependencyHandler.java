@@ -1,9 +1,8 @@
 package org.mule.gulash.depedencies;
 
-import org.mule.dependency.DependencyManager;
-import org.mule.dependency.Module;
+import org.mule.dependency.BaseDependencyHandler;
+import org.mule.dependency.DependencyModule;
 import org.mule.module.core.BuilderConfigurationException;
-import org.mule.module.core.Mule;
 import org.mule.util.FileUtils;
 import org.mule.util.StringUtils;
 
@@ -26,7 +25,7 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.version.Version;
 
 
-public class MavenDependencyManager implements DependencyManager
+public class MavenDependencyHandler extends BaseDependencyHandler
 {
 
     public static final String DEFAULT_GROUP_ID = "org.mule.modules";
@@ -36,23 +35,23 @@ public class MavenDependencyManager implements DependencyManager
 
 
     @Override
-    public File installModule(Module module, Mule mule)
+    public File getModule(DependencyModule dependencyModule, File appHome)
     {
         try
         {
-            String version = StringUtils.isBlank(module.getVersion()) ? getHighestVersion(module.getName()) : module.getVersion();
-            String moduleName = module.getName();
+            String version = StringUtils.isBlank(dependencyModule.getVersion()) ? getHighestVersion(dependencyModule.getName()) : dependencyModule.getVersion();
+            String moduleName = dependencyModule.getName();
 
-            final File moduleTargetDirectory = getModuleDirectory(mule, moduleName, version);
+            final File moduleTargetDirectory = getModuleVersionDirectory(appHome, moduleName, version);
             if (!moduleTargetDirectory.exists())
             {
                 final RepositorySystem system = MvnFactory.newRepositorySystem();
                 final RepositorySystemSession session = MvnFactory.newRepositorySystemSession(system);
                 final Artifact artifact = createArtifact(moduleName, version);
                 final ArtifactRequest artifactRequest = createArtifactRequest(artifact);
-                if (!StringUtils.isBlank(module.getUrl()))
+                if (!StringUtils.isBlank(dependencyModule.getUrl()))
                 {
-                    artifactRequest.addRepository(MvnFactory.newCustomRepository(module.getUrl()));
+                    artifactRequest.addRepository(MvnFactory.newCustomRepository(dependencyModule.getUrl()));
                 }
                 final ArtifactResult rangeResult = system.resolveArtifact(session, artifactRequest);
                 File file = rangeResult.getArtifact().getFile();
@@ -60,16 +59,16 @@ public class MavenDependencyManager implements DependencyManager
                 FileUtils.unzip(file, moduleTargetDirectory);
 
             }
-            System.out.println("Module " + module.getName() + ":" + version + " was successfully installed at " + moduleTargetDirectory.getAbsolutePath());
+            System.out.println("Module " + dependencyModule.getName() + ":" + version + " was successfully installed at " + moduleTargetDirectory.getAbsolutePath());
             return moduleTargetDirectory;
         }
         catch (IOException e)
         {
-            throw new BuilderConfigurationException("Exception while installing module  " + module, e);
+            throw new BuilderConfigurationException("Exception while installing module  " + dependencyModule, e);
         }
         catch (ArtifactResolutionException e)
         {
-            throw new BuilderConfigurationException("Exception while installing module  " + module, e);
+            throw new BuilderConfigurationException("Exception while installing module  " + dependencyModule, e);
         }
     }
 
@@ -78,14 +77,6 @@ public class MavenDependencyManager implements DependencyManager
         return new DefaultArtifact(DEFAULT_GROUP_ID, DEFAULT_MODULE_PREFIX + module, DEFAULT_CLASSIFIER, DEFAULT_EXTENSION, version);
     }
 
-    private File getModuleDirectory(Mule mule, String module, String version)
-    {
-        final File libDirectory = mule.getLibDirectory();
-        final File moduleDirectory = new File(libDirectory, module);
-        final File moduleTargetDirectory = new File(moduleDirectory, version);
-
-        return moduleTargetDirectory;
-    }
 
     public String getHighestVersion(String module)
     {
@@ -106,7 +97,7 @@ public class MavenDependencyManager implements DependencyManager
     }
 
     @Override
-    public List<String> listVersions(String module)
+    public List<String> listVersions(String module, File appHome)
     {
         try
         {

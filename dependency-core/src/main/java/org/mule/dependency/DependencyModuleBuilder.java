@@ -1,7 +1,7 @@
 package org.mule.dependency;
 
 
-public class ModuleBuilder
+public class DependencyModuleBuilder
 {
 
     private String name;
@@ -9,26 +9,26 @@ public class ModuleBuilder
     private String url;
 
 
-    public ModuleBuilder(String name)
+    public DependencyModuleBuilder(String name)
     {
         this.name = name;
     }
 
-    public ModuleBuilder version(String version)
+    public DependencyModuleBuilder version(String version)
     {
         this.version = version;
         return this;
     }
 
-    public ModuleBuilder from(String url)
+    public DependencyModuleBuilder from(String url)
     {
         this.url = url;
         return this;
     }
 
 
-    public Module create()
+    public DependencyModule create()
     {
-        return new Module(name, version, url);
+        return new DependencyModule(name, version, url);
     }
 }
