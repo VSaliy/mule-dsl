@@ -19,9 +19,6 @@
             <version>${project.version}</version>
         </dependency>
 
-
-
-
         <dependency>
             <groupId>org.mule.transports</groupId>
             <artifactId>mule-transport-http</artifactId>
@@ -32,10 +29,7 @@
                     <artifactId>mule-module-spring-config</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>provided</scope>
         </dependency>
-
-
 
 
         <!-- Test dependencies -->

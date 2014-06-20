@@ -27,6 +27,7 @@
         
         <module>gulash</module>
         <module>mushi</module>
+        <module>mushi-maven-plugin</module>
 
 
         <!--module>modules</module-->

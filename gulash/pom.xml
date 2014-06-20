@@ -96,11 +96,16 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!-- Mule depedencies -->
         <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-devkit-support</artifactId>
-            <version>${mule.version}</version>
+            <groupId>org.mule.feather</groupId>
+            <artifactId>http</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mule.feather</groupId>
+            <artifactId>tcp</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -108,6 +113,14 @@
             <artifactId>apikit</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <!-- Mule depedencies -->
+        <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-devkit-support</artifactId>
+            <version>${mule.version}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.mule</groupId>
@@ -126,67 +139,7 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-apikit</artifactId>
-            <version>${apikit.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mule</groupId>
-                    <artifactId>mule-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mule.modules</groupId>
-                    <artifactId>mule-module-spring-config</artifactId>
-                </exclusion>
 
-                <exclusion>
-                    <groupId>org.mule.modules</groupId>
-                    <artifactId>mule-module-json</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mule.transports</groupId>
-                    <artifactId>mule-transport-http</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.mail</groupId>
-                    <artifactId>mailapi</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.mozilla</groupId>
-                    <artifactId>rhino</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.mule.transports</groupId>
-            <artifactId>mule-transport-http</artifactId>
-            <version>${mule.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mule.modules</groupId>
-                    <artifactId>mule-module-spring-config</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mule.modules</groupId>
-            <artifactId>mule-module-json</artifactId>
-            <version>${mule.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mule.modules</groupId>
-                    <artifactId>mule-module-spring-config</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
 
         <dependency>

@@ -68,7 +68,7 @@ public class MushiApplication implements MuleApplication
         final Properties properties = new Properties();
         try
         {
-            properties.load(new FileInputStream(new File(applicationHome, "mule-deploy.properties")));
+            properties.load(classLoader.getResourceAsStream("mule-deploy.properties"));
             final String configs = String.valueOf(properties.get("modules"));
             final String[] modules = configs.split(",");
             for (String module : modules)
