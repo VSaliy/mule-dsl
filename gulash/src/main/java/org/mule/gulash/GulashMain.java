@@ -118,9 +118,7 @@ public class GulashMain
 
     private static Options createOptions()
     {
-        Option ramlFile = OptionBuilder.withArgName("RAML file")
-                .hasArg()
-                .withDescription("Create a script based on the specified RAML file.")
+        Option ramlFile = OptionBuilder.withDescription("Create a script based on the specified RAML file.")
                 .create(CREATE_OPTION);
 
         Option help = new Option(HELP_OPTION, "Print this message");

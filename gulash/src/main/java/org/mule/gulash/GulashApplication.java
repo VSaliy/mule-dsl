@@ -21,6 +21,12 @@ public class GulashApplication implements MuleApplication
     }
 
     @Override
+    public void initialize()
+    {
+
+    }
+
+    @Override
     public List<MuleModule> getModules()
     {
         return Arrays.<MuleModule>asList(new GulashModule(groovyFile, getAppHome()));
@@ -37,5 +43,11 @@ public class GulashApplication implements MuleApplication
     public File getAppHome()
     {
         return groovyFile.getParentFile();
+    }
+
+    @Override
+    public ClassLoader getApplicationClassLoader()
+    {
+        return null;
     }
 }

@@ -24,6 +24,12 @@ public class MuleApplicationLauncher
     {
         System.out.println("Starting -> " + muleApplication.getName());
         final Mule mule = new Mule(muleApplication.getAppHome());
+        muleApplication.initialize();
+        final ClassLoader applicationClassLoader = muleApplication.getApplicationClassLoader();
+        if(applicationClassLoader != null)
+        {
+            Thread.currentThread().setContextClassLoader(applicationClassLoader);
+        }
         final List<MuleModule> modules = muleApplication.getModules();
         for (MuleModule module : modules)
         {
@@ -40,7 +46,7 @@ public class MuleApplicationLauncher
         }
         catch (MuleException e)
         {
-            e.printStackTrace();
+           throw new RuntimeException(e);
         }
 
         mule.onStart(new StartListener()
@@ -75,7 +81,7 @@ public class MuleApplicationLauncher
                 }
                 catch (MuleException e)
                 {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
         });

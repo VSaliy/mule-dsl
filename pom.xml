@@ -17,8 +17,8 @@
 
     <modules>
         <module>core</module>
-        <module>http</module>
         <module>tcp</module>
+        <module>http</module>
         <module>apikit</module>
 
         <module>dependency-core</module>
@@ -26,6 +26,7 @@
         <module>dsl-devkit-plugin</module>
         
         <module>gulash</module>
+        <module>mushi</module>
 
 
         <!--module>modules</module-->

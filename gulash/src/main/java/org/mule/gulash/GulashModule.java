@@ -1,9 +1,7 @@
 package org.mule.gulash;
 
 import org.mule.api.MuleEvent;
-import org.mule.api.MuleException;
 import org.mule.api.MuleMessage;
-import org.mule.construct.Flow;
 import org.mule.dependency.ModuleClassLoader;
 import org.mule.dependency.ModuleDependencyManager;
 import org.mule.gulash.depedencies.MavenDependencyHandler;
@@ -18,7 +16,6 @@ import org.mule.module.core.builder.PropertiesBuilder;
 import org.mule.util.FileUtils;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Set;
 
