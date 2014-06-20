@@ -26,7 +26,7 @@ public class SimpleTwitterTest
                              .accessKey("")
                              .accessSecret("").as("twitter"));
         mule.declare(flow("TestTwitter")
-                             .on(endpoint("http://localhost:8081"))
+                             .on(inbound("http://localhost:8081"))
                              .then(updateStatus("Simple Test").using("twitter")));
         mule.start();
     }
@@ -45,7 +45,7 @@ public class SimpleTwitterTest
                              .accessSecret(accessSecret).as("twitter"));
 
         mule.declare(flow("TestTwitter")
-                             .on(endpoint("http://localhost:8081"))
+                             .on(inbound("http://localhost:8081"))
                              .then(updateStatus("Hello #mule_light")
                                            .mediaName("Test")
                                            .media(new FileInputStream("/Users/machaval/Downloads/logo.png"))
