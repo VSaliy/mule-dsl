@@ -9,6 +9,6 @@ public interface MuleModule
 
     void initialize();
 
-    void start(Mule mule);
+    void build(Mule mule, MuleEnvironment environment);
 
 }

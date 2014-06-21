@@ -51,7 +51,6 @@
                     <artifactId>rhino</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>provided</scope>
         </dependency>
 
 

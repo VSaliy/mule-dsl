@@ -1,4 +1,4 @@
-package org.mule.module.http;
+package org.mule.module;
 
 import org.mule.module.http.builder.PollingHttpConfigurationBuilder;
 

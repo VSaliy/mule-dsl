@@ -17,4 +17,6 @@ public interface MuleApplication
 
     ClassLoader getApplicationClassLoader();
 
+    MuleEnvironment getEnvironment();
+
 }

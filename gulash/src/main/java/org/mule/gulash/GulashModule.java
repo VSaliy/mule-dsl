@@ -11,6 +11,7 @@ import org.mule.module.Groovy;
 import org.mule.module.core.Mule;
 import org.mule.module.core.StartListener;
 import org.mule.module.core.TimePeriod;
+import org.mule.module.core.application.MuleEnvironment;
 import org.mule.module.core.application.MuleModule;
 import org.mule.module.core.builder.PropertiesBuilder;
 import org.mule.util.FileUtils;
@@ -26,9 +27,7 @@ import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.raml.model.ActionType;
 
-/**
- * Created by machaval on 6/17/14.
- */
+
 public class GulashModule implements MuleModule
 {
 
@@ -80,7 +79,7 @@ public class GulashModule implements MuleModule
     }
 
     @Override
-    public void start(Mule mule)
+    public void build(Mule mule, MuleEnvironment environment)
     {
 
 

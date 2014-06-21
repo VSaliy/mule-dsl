@@ -1,6 +1,7 @@
 package org.mule.gulash;
 
 import org.mule.module.core.application.MuleApplication;
+import org.mule.module.core.application.MuleEnvironment;
 import org.mule.module.core.application.MuleModule;
 
 import java.io.File;
@@ -49,5 +50,11 @@ public class GulashApplication implements MuleApplication
     public ClassLoader getApplicationClassLoader()
     {
         return null;
+    }
+
+    @Override
+    public MuleEnvironment getEnvironment()
+    {
+        return new MuleEnvironment(System.getProperties());
     }
 }

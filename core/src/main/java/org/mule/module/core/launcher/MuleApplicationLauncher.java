@@ -26,7 +26,7 @@ public class MuleApplicationLauncher
         final Mule mule = new Mule(muleApplication.getAppHome());
         muleApplication.initialize();
         final ClassLoader applicationClassLoader = muleApplication.getApplicationClassLoader();
-        if(applicationClassLoader != null)
+        if (applicationClassLoader != null)
         {
             Thread.currentThread().setContextClassLoader(applicationClassLoader);
         }
@@ -38,7 +38,7 @@ public class MuleApplicationLauncher
 
         for (MuleModule module : modules)
         {
-            module.start(mule);
+            module.build(mule, muleApplication.getEnvironment());
         }
         try
         {
@@ -46,7 +46,7 @@ public class MuleApplicationLauncher
         }
         catch (MuleException e)
         {
-           throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
 
         mule.onStart(new StartListener()
