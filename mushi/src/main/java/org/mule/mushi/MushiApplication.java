@@ -7,6 +7,7 @@ import org.mule.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -15,6 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Created by machaval on 6/18/14.
  */
@@ -22,14 +25,19 @@ public class MushiApplication implements MuleApplication
 {
 
 
+    public static final String MODULES = "modules";
+    public static final String PROPERTIES = "properties";
+    public static final String COMMA_SEPARATOR = ",";
     private File applicationHome;
+    private String environment;
     private List<MuleModule> modules;
     private ClassLoader classLoader;
-    private List<Properties>  properties;
+    private List<Properties> properties;
 
-    public MushiApplication(File applicationHome)
+    public MushiApplication(File applicationHome, String environment)
     {
         this.applicationHome = applicationHome;
+        this.environment = environment;
     }
 
     @Override
@@ -68,11 +76,18 @@ public class MushiApplication implements MuleApplication
         final Properties deployProperties = new Properties();
         try
         {
-            deployProperties.load(classLoader.getResourceAsStream("mule-deploy.properties"));
-            final String configs = String.valueOf(deployProperties.get("modules"));
-            loadConfigs(configs);
-            final String propertiesValue = String.valueOf(deployProperties.get("properties"));
-            loadProperties(propertiesValue);
+            final InputStream muleDeployProperties = classLoader.getResourceAsStream("mule-deploy.properties");
+            if (muleDeployProperties != null)
+            {
+                deployProperties.load(muleDeployProperties);
+                initModules(deployProperties);
+                initProperties(deployProperties);
+            }
+            else
+            {
+                throw new RuntimeException("The file mule-deploy.properties was not found");
+            }
+
 
         }
         catch (IOException e)
@@ -81,22 +96,80 @@ public class MushiApplication implements MuleApplication
         }
     }
 
-    private void loadProperties(String propertiesValue) throws IOException
+    private void initModules(Properties deployProperties)
     {
-        final String[] propertiesNames = propertiesValue.split(",");
-        this.properties = new ArrayList<Properties>();
-        for (String propertiesName : propertiesNames)
+        final String configs;
+        if (!StringUtils.isBlank(environment) && deployProperties.containsKey(getModuleWithEnvironment()))
         {
-            Properties properties = new Properties();
-            properties.load(classLoader.getResourceAsStream(propertiesName));
-            this.properties.add(properties);
+            configs = String.valueOf(deployProperties.get(getModuleWithEnvironment()));
         }
+        else if (deployProperties.containsKey(MODULES))
+        {
+            configs = String.valueOf(deployProperties.get(MODULES));
+        }
+        else
+        {
+            throw new RuntimeException("Modules property not specified at mule-deploy.properties");
+        }
+
+        loadModules(configs);
+    }
+
+    private void initProperties(Properties deployProperties) throws IOException
+    {
+        this.properties = new ArrayList<Properties>();
+
+        String propertiesValue = null;
+        if (!StringUtils.isBlank(environment) && deployProperties.containsKey(getPropertiesWithEnvironment()))
+        {
+            propertiesValue = String.valueOf(deployProperties.get(getPropertiesWithEnvironment()));
+        }
+        else if (deployProperties.containsKey(PROPERTIES))
+        {
+            propertiesValue = String.valueOf(deployProperties.get(PROPERTIES));
+        }
+        if (propertiesValue != null)
+        {
+            loadProperties(propertiesValue);
+        }
+
         properties.add(System.getProperties());
     }
 
-    private void loadConfigs(String configs)
+    private String getPropertiesWithEnvironment()
     {
-        final String[] modules = configs.split(",");
+        return PROPERTIES + "." + environment;
+    }
+
+    private String getModuleWithEnvironment()
+    {
+        return MODULES + "." + environment;
+    }
+
+    private void loadProperties(String propertiesValue) throws IOException
+    {
+        final String[] propertiesNames = propertiesValue.split(COMMA_SEPARATOR);
+        for (String propertiesName : propertiesNames)
+        {
+            final Properties properties = new Properties();
+            final InputStream propertyStream = classLoader.getResourceAsStream(propertiesName);
+            if (propertyStream != null)
+            {
+                properties.load(propertyStream);
+                this.properties.add(properties);
+            }
+            else
+            {
+                throw new RuntimeException("No property was found with name " + propertiesName);
+            }
+
+        }
+
+    }
+
+    private void loadModules(String modulesPropertyValue)
+    {
+        final String[] modules = modulesPropertyValue.split(COMMA_SEPARATOR);
         for (String module : modules)
         {
             try

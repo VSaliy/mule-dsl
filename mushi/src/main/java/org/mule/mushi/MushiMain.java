@@ -20,6 +20,7 @@ public class MushiMain
 
     public static final String HELP_OPTION = "help";
     public static final String DIRECTORY_OPTION = "d";
+    public static final String ENVIRONMENT = "env";
 
     public static void main(String[] args) throws ParseException, IOException
     {
@@ -28,8 +29,12 @@ public class MushiMain
         // create the parser
         final CommandLineParser parser = new BasicParser();
 
+
         // parse the command line arguments
         final CommandLine line = parser.parse(options, args);
+        final String environment = line.getOptionValue(ENVIRONMENT);
+
+
         if (line.hasOption(HELP_OPTION))
         {
             printHelp(options);
@@ -37,7 +42,7 @@ public class MushiMain
         else if (line.hasOption(DIRECTORY_OPTION))
         {
             final File appDirectory = new File(line.getOptionValue(DIRECTORY_OPTION));
-            new MuleApplicationLauncher().start(new MushiApplication(appDirectory));
+            new MuleApplicationLauncher().start(new MushiApplication(appDirectory,environment));
         }
         else if (line.getArgs().length > 0)
         {
@@ -45,7 +50,7 @@ public class MushiMain
             final File appFile = new File(argsArray[0]);
             final File appDirectory = createTempDirectory(appFile.getName());
             FileUtils.unzip(appFile, appDirectory);
-            new MuleApplicationLauncher().start(new MushiApplication(appDirectory));
+            new MuleApplicationLauncher().start(new MushiApplication(appDirectory,environment));
         }
         else
         {
@@ -80,13 +85,13 @@ public class MushiMain
 
     private static Options createOptions()
     {
-
-
-        Option help = new Option(HELP_OPTION, "Print this message");
-        Option directory = new Option(DIRECTORY_OPTION, "To use a directory instead of a zip");
-        Options options = new Options();
+        final Option help = new Option(HELP_OPTION, "Print this message.");
+        final Option directory = new Option(DIRECTORY_OPTION, "To use a directory instead of a zip.");
+        final Option environment = new Option(ENVIRONMENT, "Specify the environment.");
+        final Options options = new Options();
         options.addOption(help);
         options.addOption(directory);
+        options.addOption(environment);
         return options;
     }
 }
