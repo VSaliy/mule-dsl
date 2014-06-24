@@ -18,15 +18,29 @@ package org.mule.mushi;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactCollector;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
+import org.apache.maven.artifact.resolver.ResolutionNode;
+import org.apache.maven.artifact.resolver.WarningResolutionListener;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
+import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * Generates a mushi app
@@ -66,12 +80,46 @@ public class MushiMojo extends AbstractMojo
 
 
     /**
+     * Local maven repository.
+     *
+     * @parameter expression="${localRepository}"
+     * @required
+     * @readonly
+     */
+    protected ArtifactRepository localRepository;
+
+    /**
+     * Artifact collector, needed to resolve dependencies.
+     *
+     * @component role="org.apache.maven.artifact.resolver.ArtifactCollector"
+     * @required
+     * @readonly
+     */
+    protected ArtifactCollector artifactCollector;
+
+    /**
+     * @component role="org.apache.maven.artifact.metadata.ArtifactMetadataSource" hint="maven"
+     */
+    protected ArtifactMetadataSource artifactMetadataSource;
+
+    /**
      * Name of the generated Mule App.
      *
      * @parameter alias="appName" expression="${appName}" default-value="${project.build.finalName}"
      * @required
      */
     protected String finalName;
+
+    /**
+     * Artifact resolver, needed to download source jars for inclusion in classpath.
+     *
+     * @component role="org.apache.maven.artifact.resolver.ArtifactResolver"
+     * @required
+     * @readonly
+     */
+    protected ArtifactResolver artifactResolver;
+
+    protected Logger logger;
 
     public void execute() throws MojoExecutionException
     {
@@ -97,16 +145,74 @@ public class MushiMojo extends AbstractMojo
 
     private void includeDependencies(MushiArchiver mushiArchiver) throws ArchiverException
     {
+
+
         final Set<Artifact> dependencies = project.getDependencyArtifacts();
+        final Set<Artifact> filteredDependencies = new HashSet<Artifact>();
         for (Artifact dependency : dependencies)
         {
-            final String scope = dependency.getScope();
-            System.out.println("scope = " + scope);
-            if (Artifact.SCOPE_COMPILE.equals(scope) || Artifact.SCOPE_RUNTIME.equals(scope))
+            if (isCorrectScope(dependency))
             {
-                mushiArchiver.addLibraryArtifact(dependency);
+                filteredDependencies.add(dependency);
             }
         }
+        try
+        {
+            final ArrayList listeners = new ArrayList();
+            // listeners.add(new WarningResolutionListener(logger));
+            final ArtifactResolutionResult collect = getArtifactCollector().collect(filteredDependencies, project.getArtifact(), getLocalRepository(), project.getRemoteArtifactRepositories(), getArtifactMetadataSource(), new ArtifactFilter()
+            {
+                @Override
+                public boolean include(Artifact artifact)
+                {
+                    final boolean isMuleCore = artifact.getGroupId().equals("org.mule") && artifact.getArtifactId().equals("mule-core");
+                    final boolean isMuleLightCore = artifact.getGroupId().equals("org.mule.feather") && artifact.getArtifactId().equals("core");
+                    return !isMuleCore && !isMuleLightCore;
+                }
+            }, listeners);
+            final Set<ResolutionNode> artifactResolutionNodes = collect.getArtifactResolutionNodes();
+            for (ResolutionNode artifactResolutionNode : artifactResolutionNodes)
+            {
+
+
+                Artifact artifact = artifactResolutionNode.getArtifact();
+                // don't resolve jars for reactor projects
+                if (isCorrectScope(artifact))
+                {
+                    try
+                    {
+                        getArtifactResolver().resolve(artifact, artifactResolutionNode.getRemoteRepositories(), getLocalRepository());
+                    }
+                    catch (ArtifactNotFoundException e)
+                    {
+                        getLog().debug(e.getMessage(), e);
+                    }
+                    catch (ArtifactResolutionException e)
+                    {
+                        getLog().debug(e.getMessage(), e);
+                    }
+                }
+
+                if (artifact.getType().equals("jar") && isCorrectScope(artifact))
+                {
+                    mushiArchiver.addLibraryArtifact(artifact);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void enableLogging(Logger logger)
+    {
+        this.logger = logger;
+    }
+
+    private boolean isCorrectScope(Artifact artifact)
+    {
+        return Artifact.SCOPE_COMPILE.equals(artifact.getScope()) || Artifact.SCOPE_RUNTIME.equals(artifact.getScope());
     }
 
     private void includeProjectJar(MushiArchiver archiver) throws ArchiverException, MojoExecutionException
@@ -136,6 +242,36 @@ public class MushiMojo extends AbstractMojo
         }
     }
 
+    public ArtifactRepository getLocalRepository()
+    {
+        return localRepository;
+    }
+
+    public void setLocalRepository(ArtifactRepository localRepository)
+    {
+        this.localRepository = localRepository;
+    }
+
+    public ArtifactCollector getArtifactCollector()
+    {
+        return artifactCollector;
+    }
+
+    public void setArtifactCollector(ArtifactCollector artifactCollector)
+    {
+        this.artifactCollector = artifactCollector;
+    }
+
+    public ArtifactMetadataSource getArtifactMetadataSource()
+    {
+        return artifactMetadataSource;
+    }
+
+    public void setArtifactMetadataSource(ArtifactMetadataSource artifactMetadataSource)
+    {
+        this.artifactMetadataSource = artifactMetadataSource;
+    }
+
     public void setProject(MavenProject project)
     {
         this.project = project;
@@ -154,6 +290,16 @@ public class MushiMojo extends AbstractMojo
     public void setFinalName(String finalName)
     {
         this.finalName = finalName;
+    }
+
+    public ArtifactResolver getArtifactResolver()
+    {
+        return artifactResolver;
+    }
+
+    public void setArtifactResolver(ArtifactResolver artifactResolver)
+    {
+        this.artifactResolver = artifactResolver;
     }
 
     protected File getMushiAppFile()

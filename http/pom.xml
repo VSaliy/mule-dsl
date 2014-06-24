@@ -28,6 +28,10 @@
                     <groupId>org.mule.modules</groupId>
                     <artifactId>mule-module-spring-config</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.mule</groupId>
+                    <artifactId>mule-core</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 

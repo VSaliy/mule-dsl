@@ -163,6 +163,8 @@ public class RestRouterBuilder implements Builder<Flow>
             @Override
             public MessagingExceptionHandler create(MuleContext muleContext)
             {
+
+                //TODO we should expose this
                 RestMappingExceptionStrategy es = new RestMappingExceptionStrategy();
                 es.setGlobalName(APIKIT_EXCEPTION_STRATEGY_NAME);
                 List<MappingExceptionListener> exceptionListeners = new ArrayList<MappingExceptionListener>();
