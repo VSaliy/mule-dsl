@@ -5,6 +5,7 @@ import org.mule.api.processor.MessageProcessor;
 import org.mule.api.routing.filter.Filter;
 import org.mule.config.dsl.Builder;
 import org.mule.module.core.builder.AsyncBuilder;
+import org.mule.module.core.builder.CatchExceptionStrategyBuilder;
 import org.mule.module.core.builder.ChoiceBuilder;
 import org.mule.module.core.builder.CustomMessageProcessorBuilder;
 import org.mule.module.core.builder.CustomMessageProcessorBuilderImpl;
@@ -125,6 +126,15 @@ public class Core
         return new InlineMessageProcessorBuilder(messageProcessor);
     }
 
+    public static CatchExceptionStrategyBuilder _catch(Class<? extends Exception> when)
+    {
+        return new CatchExceptionStrategyBuilder(when);
+    }
+
+    public static CatchExceptionStrategyBuilder _catch(String when)
+    {
+        return new CatchExceptionStrategyBuilder(when);
+    }
 
     public static <K, V> MapBuilder<K, V> map(K key)
     {

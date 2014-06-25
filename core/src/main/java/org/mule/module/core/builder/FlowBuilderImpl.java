@@ -26,6 +26,7 @@ public class FlowBuilderImpl extends AbstractPipelineBuilder implements FlowBuil
         this.name = name;
     }
 
+    @Override
     public PrivateFlowBuilder on(Builder<? extends MessageSource> messageSourceBuilder)
     {
         this.messageSourceBuilder = messageSourceBuilder;
@@ -33,10 +34,9 @@ public class FlowBuilderImpl extends AbstractPipelineBuilder implements FlowBuil
     }
 
     @Override
-    public PrivateFlowBuilder onException(Builder<MessagingExceptionHandler> exceptionBuilder)
+    public void onException(Builder<MessagingExceptionHandler> exceptionBuilder)
     {
         this.exceptionBuilder = exceptionBuilder;
-        return this;
     }
 
     public PrivateFlowBuilder then(Builder<? extends MessageProcessor>... builder)
@@ -44,7 +44,6 @@ public class FlowBuilderImpl extends AbstractPipelineBuilder implements FlowBuil
         getMessageProcessorBuilders().addAll(Arrays.asList(builder));
         return this;
     }
-
 
     public Flow create(MuleContext muleContext)
     {

@@ -12,13 +12,10 @@ import org.mule.config.dsl.Builder;
 import org.mule.construct.Flow;
 import org.mule.module.Core;
 import org.mule.module.apikit.Configuration;
-import org.mule.module.apikit.MappingExceptionListener;
-import org.mule.module.apikit.RestMappingExceptionStrategy;
 import org.mule.module.apikit.Router;
 import org.mule.module.core.builder.PrivateFlowBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.raml.model.ActionType;
@@ -158,33 +155,7 @@ public class RestRouterBuilder implements Builder<Flow>
 
     private Builder<MessagingExceptionHandler> getExceptionBuilder()
     {
-        return new Builder<MessagingExceptionHandler>()
-        {
-            @Override
-            public MessagingExceptionHandler create(MuleContext muleContext)
-            {
-
-                //TODO we should expose this
-                RestMappingExceptionStrategy es = new RestMappingExceptionStrategy();
-                es.setGlobalName(APIKIT_EXCEPTION_STRATEGY_NAME);
-                List<MappingExceptionListener> exceptionListeners = new ArrayList<MappingExceptionListener>();
-                exceptionListeners.add(createExceptionListener(NOT_FOUND_STATUS_CODE, NOT_FOUND_EXCEPTION_CLASS_NAME));
-                exceptionListeners.add(createExceptionListener(METHOD_NOT_ALLOWED_STATUS_CODE, METHOD_NOT_ALLOWED_EXCEPTION_CLASS_NAME));
-                exceptionListeners.add(createExceptionListener(UNSOPORTED_MEDIA_TYPE_STATUS_CODE, UNSUPPORTED_MEDIA_TYPE_EXCEPTION_CLASS_NAME));
-                exceptionListeners.add(createExceptionListener(NOT_ACCEPTABLE_STATUS_CODE, NOT_ACCEPTABLE_EXCEPTION_CLASS_NAME));
-                exceptionListeners.add(createExceptionListener(BAD_REQUEST_STATUS, BAD_REQUEST_EXCEPTION_CLASS_NAME));
-                es.setExceptionListeners(exceptionListeners);
-                return es;
-            }
-
-            private MappingExceptionListener createExceptionListener(int status, String... exception)
-            {
-                MappingExceptionListener mappingExceptionListener = new MappingExceptionListener();
-                mappingExceptionListener.setStatusCode(status);
-                mappingExceptionListener.setExceptions(Arrays.asList(exception));
-                return mappingExceptionListener;
-            }
-        };
+        return new MappingExceptionStrategyBuilder();
     }
 
     private String getAddress()
