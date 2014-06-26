@@ -126,12 +126,12 @@ public class Core
         return new InlineMessageProcessorBuilder(messageProcessor);
     }
 
-    public static CatchExceptionStrategyBuilder _catch(Class<? extends Exception> when)
+    public static CatchExceptionStrategyBuilder catch_(Class<? extends Exception> when)
     {
         return new CatchExceptionStrategyBuilder(when);
     }
 
-    public static CatchExceptionStrategyBuilder _catch(String when)
+    public static CatchExceptionStrategyBuilder catch_(String when)
     {
         return new CatchExceptionStrategyBuilder(when);
     }

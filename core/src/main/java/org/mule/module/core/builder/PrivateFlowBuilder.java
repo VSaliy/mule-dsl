@@ -11,6 +11,6 @@ public interface PrivateFlowBuilder extends MessageProcessorBuilder<Flow>
 
     PrivateFlowBuilder then(Builder<? extends MessageProcessor>... builder);
 
-    void onException(Builder<MessagingExceptionHandler> exceptionBuilder);
+    MessageProcessorBuilder<Flow> onException(Builder<MessagingExceptionHandler>... exceptionBuilder);
 
 }
