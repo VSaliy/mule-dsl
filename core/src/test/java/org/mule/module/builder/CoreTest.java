@@ -13,6 +13,8 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.mule.module.Core.*;
+
 /**
  * Created by machaval on 2/20/14.
  */
@@ -64,9 +66,9 @@ public class CoreTest
         mule.declare(
                 flow("exception").
                         then(throwNullPointerException()).
-                        onException(Core.catch_(NullPointerException.class)
+                        onException(catch_(NullPointerException.class)
                                             .then(setPayload(OK_PAYLOAD)),
-                                    Core.catch_(IllegalAccessException.class)
+                                    catch_(IllegalAccessException.class)
                                             .then(setPayload(BAD_PAYLOAD))
                         )
         );

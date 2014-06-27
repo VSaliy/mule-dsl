@@ -13,6 +13,7 @@ import org.mule.construct.Flow;
 import org.mule.module.Core;
 import org.mule.module.apikit.Configuration;
 import org.mule.module.apikit.Router;
+import org.mule.module.core.builder.MessageProcessorBuilder;
 import org.mule.module.core.builder.PrivateFlowBuilder;
 
 import java.util.ArrayList;
@@ -146,7 +147,7 @@ public class RestRouterBuilder implements Builder<Flow>
         config.setConsolePath(consolePath);
         config.setRaml(ramlPath);
 
-        final PrivateFlowBuilder restRouter = flow(APIKIT_FLOW_NAME)
+        final MessageProcessorBuilder<Flow> restRouter = flow(APIKIT_FLOW_NAME)
                 .on(inbound(address).requestResponse())
                 .then(process(Router.class).using(properties("config", config)))
                 .onException(getExceptionBuilder());
