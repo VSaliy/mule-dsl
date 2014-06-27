@@ -18,9 +18,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
-/**
- * Created by machaval on 6/18/14.
- */
 public class MushiApplication implements MuleApplication
 {
 
@@ -28,14 +25,16 @@ public class MushiApplication implements MuleApplication
     public static final String MODULES = "modules";
     public static final String PROPERTIES = "properties";
     public static final String COMMA_SEPARATOR = ",";
+    private String name;
     private File applicationHome;
     private String environment;
     private List<MuleModule> modules;
     private ClassLoader classLoader;
     private List<Properties> properties;
 
-    public MushiApplication(File applicationHome, String environment)
+    public MushiApplication(String name, File applicationHome, String environment)
     {
+        this.name = name;
         this.applicationHome = applicationHome;
         this.environment = environment;
     }
@@ -200,7 +199,7 @@ public class MushiApplication implements MuleApplication
     @Override
     public String getName()
     {
-        return applicationHome.getName();
+        return name;
     }
 
     @Override

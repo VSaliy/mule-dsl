@@ -49,6 +49,7 @@ public class MuleApplicationLauncher
             throw new RuntimeException(e);
         }
 
+        System.out.println("Started -> " + muleApplication.getName());
         mule.onStart(new StartListener()
         {
             @Override
@@ -76,8 +77,9 @@ public class MuleApplicationLauncher
                 try
                 {
                     //Stop mule when killing the vm
-                    System.out.println("Stoping -> " + muleApplication.getName());
+                    System.out.println("Stopping -> " + muleApplication.getName());
                     mule.stop();
+                    System.out.println("Stopped -> " + muleApplication.getName());
                 }
                 catch (MuleException e)
                 {

@@ -14,6 +14,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FilenameUtils;
 
 public class MushiMain
 {
@@ -42,7 +43,8 @@ public class MushiMain
         else if (line.hasOption(DIRECTORY_OPTION))
         {
             final File appDirectory = new File(line.getOptionValue(DIRECTORY_OPTION));
-            new MuleApplicationLauncher().start(new MushiApplication(appDirectory,environment));
+            final String appName = FilenameUtils.getBaseName(appDirectory.getName());
+            new MuleApplicationLauncher().start(new MushiApplication(appName, appDirectory, environment));
         }
         else if (line.getArgs().length > 0)
         {
@@ -50,7 +52,8 @@ public class MushiMain
             final File appFile = new File(argsArray[0]);
             final File appDirectory = createTempDirectory(appFile.getName());
             FileUtils.unzip(appFile, appDirectory);
-            new MuleApplicationLauncher().start(new MushiApplication(appDirectory,environment));
+            final String appName = FilenameUtils.getBaseName(appDirectory.getName());
+            new MuleApplicationLauncher().start(new MushiApplication(appName, appDirectory, environment));
         }
         else
         {
