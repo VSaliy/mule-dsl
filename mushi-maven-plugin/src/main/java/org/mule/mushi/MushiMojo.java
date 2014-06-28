@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.maven.artifact.Artifact;
@@ -32,15 +31,14 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.ResolutionNode;
-import org.apache.maven.artifact.resolver.WarningResolutionListener;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectHelper;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.util.CollectionUtils;
 
 /**
  * Generates a mushi app
@@ -52,6 +50,10 @@ public class MushiMojo extends AbstractMojo
 {
 
 
+    /**
+     * @component
+     */
+    private MavenProjectHelper projectHelper;
     /**
      * The Maven project.
      *
@@ -127,10 +129,13 @@ public class MushiMojo extends AbstractMojo
         try
         {
             final MushiArchiver mushiArchiver = new MushiArchiver(false);
-            mushiArchiver.setDestFile(getMushiAppFile());
+            final File mushiAppFile = getMushiAppFile();
+            mushiArchiver.setDestFile(mushiAppFile);
             includeDependencies(mushiArchiver);
             includeProjectJar(mushiArchiver);
             mushiArchiver.createArchive();
+            this.project.setFile(mushiAppFile);
+            this.projectHelper.attachArtifact(this.project, "zip", mushiAppFile);
         }
         catch (IOException e)
         {
@@ -305,5 +310,15 @@ public class MushiMojo extends AbstractMojo
     protected File getMushiAppFile()
     {
         return new File(this.outputDirectory, this.finalName + ".zip");
+    }
+
+    public MavenProjectHelper getProjectHelper()
+    {
+        return projectHelper;
+    }
+
+    public void setProjectHelper(MavenProjectHelper projectHelper)
+    {
+        this.projectHelper = projectHelper;
     }
 }

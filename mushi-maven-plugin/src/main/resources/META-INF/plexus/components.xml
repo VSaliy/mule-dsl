@@ -28,7 +28,7 @@
                                 org.mule.feather:mushi-maven-plugin:mushi
                             </package>
                             <install>
-                                org.apache.maven.plugins:maven-install-plugin:install,
+                                org.apache.maven.plugins:maven-install-plugin:install
                             </install>
                             <deploy>
                                 org.apache.maven.plugins:maven-deploy-plugin:deploy
@@ -45,7 +45,7 @@
             <instantiation-strategy>per-lookup</instantiation-strategy>
         </component>
 
-        <!-- let maven plugins know that a mule project is a java project -->
+        <!-- let maven plugins know that a mushi project is a java project -->
         <component>
             <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
             <role-hint>mushi</role-hint>
