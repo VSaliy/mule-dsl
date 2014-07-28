@@ -8,9 +8,9 @@ import org.mule.module.core.processor.WhenMessageProcessor;
 
 
 //when(bla)
-//  .then(log()).then(echo())
-//.otherwise().then(log())
-public class WhenBuilder implements MessageProcessorBuilder<WhenMessageProcessor>
+//  .then(log(),echo())
+//.otherwise(log())
+public class WhenBuilder implements MessageProcessorBuilder<WhenMessageProcessor>, PipelineSupport<WhenBuilder>
 {
 
     private Filter condition;
@@ -25,7 +25,8 @@ public class WhenBuilder implements MessageProcessorBuilder<WhenMessageProcessor
         this.otherwiseMessageProcessors = new ChainBuilder();
     }
 
-    public WhenBuilder then(Builder<MessageProcessor>... messageProcessorBuilders)
+    @Override
+    public WhenBuilder then(Builder<? extends MessageProcessor>... messageProcessorBuilders)
     {
         if (otherwise)
         {
@@ -38,7 +39,7 @@ public class WhenBuilder implements MessageProcessorBuilder<WhenMessageProcessor
         return this;
     }
 
-    public WhenBuilder otherwise(Builder<MessageProcessor>... messageProcessorBuilders)
+    public MessageProcessorBuilder<WhenMessageProcessor> otherwise(Builder<MessageProcessor>... messageProcessorBuilders)
     {
         otherwise = true;
         otherwiseMessageProcessors.chain(messageProcessorBuilders);

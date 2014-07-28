@@ -3,6 +3,7 @@ package org.mule.module;
 
 import org.mule.api.processor.MessageProcessor;
 import org.mule.api.routing.filter.Filter;
+import org.mule.api.transport.PropertyScope;
 import org.mule.config.dsl.Builder;
 import org.mule.module.core.builder.AsyncBuilder;
 import org.mule.module.core.builder.CatchExceptionStrategyBuilder;
@@ -25,6 +26,8 @@ import org.mule.module.core.builder.PollBuilder;
 import org.mule.module.core.builder.SetPayloadBuilder;
 import org.mule.module.core.filter.EmptyPayloadFilter;
 import org.mule.module.core.filter.NullPayloadFilter;
+import org.mule.module.core.processor.Expression;
+import org.mule.module.core.processor.SetPropertyMessageProcessorBuilder;
 import org.mule.routing.filters.ExpressionFilter;
 import org.mule.routing.filters.logic.AndFilter;
 import org.mule.routing.filters.logic.NotFilter;
@@ -61,7 +64,7 @@ public class Core
         return new EnricherBuilder(target);
     }
 
-    public static SetPayloadBuilder setPayload(String expression)
+    public static SetPayloadBuilder payload(Expression<?> expression)
     {
         return new SetPayloadBuilder(expression);
     }
@@ -74,6 +77,11 @@ public class Core
     public static ChoiceBuilder choice()
     {
         return new ChoiceBuilder();
+    }
+
+    public static SetPropertyMessageProcessorBuilder flowVar(String name, Expression<?> expression)
+    {
+        return new SetPropertyMessageProcessorBuilder(name, expression, PropertyScope.INVOCATION);
     }
 
     public static WhenBuilder when(String expression)

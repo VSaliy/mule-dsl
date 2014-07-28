@@ -6,10 +6,8 @@ import org.mule.config.dsl.Builder;
 import org.mule.construct.Flow;
 
 
-public interface PrivateFlowBuilder extends MessageProcessorBuilder<Flow>
+public interface PrivateFlowBuilder extends MessageProcessorBuilder<Flow>, PipelineSupport<PrivateFlowBuilder>
 {
-
-    PrivateFlowBuilder then(Builder<? extends MessageProcessor>... builder);
 
     MessageProcessorBuilder<Flow> onException(Builder<MessagingExceptionHandler>... exceptionBuilder);
 

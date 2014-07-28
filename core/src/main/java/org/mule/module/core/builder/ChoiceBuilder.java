@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ChoiceBuilder implements Builder<ChoiceRouter>
+public class ChoiceBuilder implements Builder<ChoiceRouter>, PipelineSupport<ChoiceBuilder>
 {
 
     private List<Filter> filters = new ArrayList<Filter>();
@@ -34,13 +34,14 @@ public class ChoiceBuilder implements Builder<ChoiceRouter>
         return this;
     }
 
-    public ChoiceBuilder otherwise()
+    public Builder<ChoiceRouter> otherwise(Builder<? extends MessageProcessor>... messageProcessors)
     {
         otherwise = new ChainBuilder();
-        current = otherwise;
+        otherwise.chain(messageProcessors);
         return this;
     }
 
+    @Override
     public ChoiceBuilder then(Builder<? extends MessageProcessor>... messageProcessors)
     {
         if (current == null)

@@ -1,28 +1,52 @@
 package org.mule.module.core.builder;
 
 import org.mule.api.MuleContext;
-import org.mule.transformer.simple.SetPayloadTransformer;
+import org.mule.module.core.processor.Expression;
+import org.mule.module.core.processor.SetPayloadMessageProcessor;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
- * Created by machaval on 2/26/14.
+ * Executes the expression and sets the result as the payload
  */
-public class SetPayloadBuilder implements MessageProcessorBuilder<SetPayloadTransformer>
+public class SetPayloadBuilder implements MessageProcessorBuilder<SetPayloadMessageProcessor>
 {
 
-    private String expression;
+    private Expression expression;
+    private String contentType;
+    private String encoding;
 
-    public SetPayloadBuilder(String expression)
+    public SetPayloadBuilder(Expression<?> expression)
     {
         this.expression = expression;
     }
 
 
-    @Override
-    public SetPayloadTransformer create(MuleContext muleContext)
+    public SetPayloadBuilder encoding(String encoding)
     {
+        this.encoding = encoding;
+        return this;
+    }
 
-        SetPayloadTransformer setPayloadTransformer = new SetPayloadTransformer();
-        setPayloadTransformer.setValue(expression);
-        return setPayloadTransformer;
+    public SetPayloadBuilder contentType(String contentType)
+    {
+        this.contentType = contentType;
+        return this;
+    }
+
+
+    @Override
+    public SetPayloadMessageProcessor create(MuleContext muleContext)
+    {
+        final SetPayloadMessageProcessor setPayload = new SetPayloadMessageProcessor(expression);
+        if (!StringUtils.isEmpty(encoding))
+        {
+            setPayload.setEncoding(encoding);
+        }
+        if (!StringUtils.isEmpty(contentType))
+        {
+            setPayload.setContentType(contentType);
+        }
+        return setPayload;
     }
 }

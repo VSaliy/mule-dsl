@@ -12,7 +12,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 
-public class ForeachBuilder extends AbstractPipelineBuilder implements MessageProcessorBuilder<Foreach>
+public class ForeachBuilder extends AbstractPipelineBuilder implements MessageProcessorBuilder<Foreach>, PipelineSupport<ForeachBuilder>
 {
 
     private int batchSize = 1;
@@ -33,7 +33,7 @@ public class ForeachBuilder extends AbstractPipelineBuilder implements MessagePr
         return this;
     }
 
-
+    @Override
     public ForeachBuilder then(Builder<? extends MessageProcessor>... builders)
     {
         getMessageProcessorBuilders().addAll(Arrays.asList(builders));
