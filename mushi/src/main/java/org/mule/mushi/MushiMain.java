@@ -12,6 +12,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FilenameUtils;
@@ -33,8 +34,13 @@ public class MushiMain
 
         // parse the command line arguments
         final CommandLine line = parser.parse(options, args);
-        final String environment = line.getOptionValue(ENVIRONMENT);
 
+        String environment = null;
+        if (line.hasOption(ENVIRONMENT))
+        {
+            environment = line.getOptionValue(ENVIRONMENT);
+            System.out.println("Loading environment " + environment);
+        }
 
         if (line.hasOption(HELP_OPTION))
         {
@@ -49,7 +55,11 @@ public class MushiMain
         else if (line.getArgs().length > 0)
         {
             String[] argsArray = line.getArgs();
-            final File appFile = new File(argsArray[0]);
+            final File appFile = new File(argsArray[line.getArgs().length - 1]);
+            if (!appFile.exists())
+            {
+                throw new RuntimeException("The specified application does not exists " + appFile.getAbsolutePath());
+            }
             final File appDirectory = createTempDirectory(appFile.getName());
             FileUtils.unzip(appFile, appDirectory);
             final String appName = FilenameUtils.getBaseName(appDirectory.getName());
@@ -88,9 +98,10 @@ public class MushiMain
 
     private static Options createOptions()
     {
-        final Option help = new Option(HELP_OPTION, "Print this message.");
-        final Option directory = new Option(DIRECTORY_OPTION, "To use a directory instead of a zip.");
-        final Option environment = new Option(ENVIRONMENT, "Specify the environment.");
+
+        final Option help = OptionBuilder.withDescription("Print this message.").create(HELP_OPTION);
+        final Option environment = OptionBuilder.withDescription("The environment to be executed.").hasArg().create(ENVIRONMENT);
+        final Option directory = OptionBuilder.withDescription("The directory where the unzipped app is placed.").hasArg().create(DIRECTORY_OPTION);
         final Options options = new Options();
         options.addOption(help);
         options.addOption(directory);

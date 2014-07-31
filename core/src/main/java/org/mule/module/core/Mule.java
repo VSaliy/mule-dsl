@@ -58,7 +58,7 @@ public class Mule
 
     public ThreadingProfileBuilder defaultThreadingProfile()
     {
-        if (threadingProfile != null)
+        if (threadingProfile == null)
         {
             threadingProfile = new ThreadingProfileBuilder();
         }
@@ -67,7 +67,7 @@ public class Mule
 
     public ThreadingProfileBuilder dispatcherThreadingProfile()
     {
-        if (dispatcherThreadingProfile != null)
+        if (dispatcherThreadingProfile == null)
         {
             dispatcherThreadingProfile = new ThreadingProfileBuilder();
         }
@@ -77,7 +77,7 @@ public class Mule
 
     public ThreadingProfileBuilder receiverThreadingProfile()
     {
-        if (receiverThreadingProfile != null)
+        if (receiverThreadingProfile == null)
         {
             receiverThreadingProfile = new ThreadingProfileBuilder();
         }
