@@ -34,6 +34,22 @@
 
     </modules>
 
+
+    <distributionManagement>
+        <repository>
+            <id>mule-ee-releases</id>
+            <name>MuleEE Releases Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>mule-ee-snapshots</id>
+            <name>MuleEE Snapshots Repository</name>
+            <url>https://repository-master.mulesoft.org/nexus/content/repositories/ci-snapshots/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
+
+
     <repositories>
         <repository>
             <name>mule-soft</name>
