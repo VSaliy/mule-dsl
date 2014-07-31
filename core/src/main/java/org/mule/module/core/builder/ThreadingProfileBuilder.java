@@ -9,7 +9,7 @@ import org.mule.module.core.TimePeriod;
 /**
  * Created by machaval on 6/26/14.
  */
-public class ThreadingProfileBuilder implements Builder<ThreadingProfile>
+public class ThreadingProfileBuilder
 {
 
     private Integer maxThreadsActive;
@@ -54,8 +54,8 @@ public class ThreadingProfileBuilder implements Builder<ThreadingProfile>
     //    return this;
     //}
 
-    @Override
-    public ThreadingProfile create(MuleContext muleContext)
+
+    public ThreadingProfile create()
     {
         final ChainedThreadingProfile chainedThreadingProfile = new ChainedThreadingProfile();
         if (maxThreadsActive != null)

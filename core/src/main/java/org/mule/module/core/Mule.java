@@ -37,6 +37,7 @@ public class Mule
     private ThreadingProfileBuilder threadingProfile;
     private ThreadingProfileBuilder dispatcherThreadingProfile;
     private ThreadingProfileBuilder receiverThreadingProfile;
+    private ThreadingProfileBuilder requesterThreadingProfile;
 
 
     public Mule(File muleAppHome)
@@ -63,6 +64,15 @@ public class Mule
             threadingProfile = new ThreadingProfileBuilder();
         }
         return threadingProfile;
+    }
+
+    public ThreadingProfileBuilder requesterThreadingProfile()
+    {
+        if (requesterThreadingProfile == null)
+        {
+            requesterThreadingProfile = new ThreadingProfileBuilder();
+        }
+        return requesterThreadingProfile;
     }
 
     public ThreadingProfileBuilder dispatcherThreadingProfile()
@@ -106,48 +116,7 @@ public class Mule
             builder.create(muleContext);
         }
         builders.clear();
-        buildThreadingProfiles();
-    }
 
-    private void buildThreadingProfiles()
-    {
-        if (threadingProfile != null)
-        {
-            final ThreadingProfile defaultThreadingProfile = threadingProfile.create(muleContext);
-            try
-            {
-                muleContext.getRegistry().registerObject(MuleProperties.OBJECT_DEFAULT_THREADING_PROFILE, defaultThreadingProfile);
-            }
-            catch (RegistrationException e)
-            {
-
-            }
-        }
-        if (dispatcherThreadingProfile != null)
-        {
-            final ThreadingProfile defaultDispatcherThreadingProfile = dispatcherThreadingProfile.create(muleContext);
-            try
-            {
-                muleContext.getRegistry().registerObject(MuleProperties.OBJECT_DEFAULT_MESSAGE_DISPATCHER_THREADING_PROFILE, defaultDispatcherThreadingProfile);
-            }
-            catch (RegistrationException e)
-            {
-
-            }
-        }
-
-        if (receiverThreadingProfile != null)
-        {
-            final ThreadingProfile defaultReceiverThreadingProfile = receiverThreadingProfile.create(muleContext);
-            try
-            {
-                muleContext.getRegistry().registerObject(MuleProperties.OBJECT_DEFAULT_MESSAGE_RECEIVER_THREADING_PROFILE, defaultReceiverThreadingProfile);
-            }
-            catch (RegistrationException e)
-            {
-
-            }
-        }
     }
 
     private void initMuleContext() throws InitialisationException, ConfigurationException
@@ -156,7 +125,8 @@ public class Mule
         {
             final Properties properties = new Properties();
             properties.put(MuleProperties.APP_HOME_DIRECTORY_PROPERTY, muleAppHome.getAbsolutePath());
-            muleContext = new DefaultMuleContextFactory().createMuleContext(new DefaultsConfigurationBuilder(), properties, new DefaultMuleConfiguration());
+
+            muleContext = new DefaultMuleContextFactory().createMuleContext(new DSLConfigurationBuilder(threadingProfile, dispatcherThreadingProfile, receiverThreadingProfile, requesterThreadingProfile), properties, new DefaultMuleConfiguration());
         }
     }
 
