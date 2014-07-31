@@ -4,15 +4,16 @@ package org.mule.module.core.processor;
 public interface UnMutableMuleMessage
 {
 
-    public Object getPayload();
+    Object getPayload();
 
-    public Object getFlowVar(String name);
+    <T> T getPayloadAs(Class<T> type);
 
-    public Object getSessionVar(String name);
+    Object getFlowVar(String name);
 
-    public Object getInboundProperty(String name);
+    Object getSessionVar(String name);
 
-    public Object getOutboundProperty(String name);
+    Object getInboundProperty(String name);
 
+    Object getOutboundProperty(String name);
 
 }

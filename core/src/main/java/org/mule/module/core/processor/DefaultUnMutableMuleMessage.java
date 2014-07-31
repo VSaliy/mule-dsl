@@ -1,6 +1,7 @@
 package org.mule.module.core.processor;
 
 import org.mule.api.MuleMessage;
+import org.mule.api.transformer.TransformerException;
 import org.mule.api.transport.PropertyScope;
 
 
@@ -18,6 +19,19 @@ public class DefaultUnMutableMuleMessage implements UnMutableMuleMessage
     public Object getPayload()
     {
         return muleMessage.getPayload();
+    }
+
+    @Override
+    public <T> T getPayloadAs(Class<T> type)
+    {
+        try
+        {
+            return muleMessage.getPayload(type);
+        }
+        catch (TransformerException e)
+        {
+            return null;
+        }
     }
 
     @Override
